@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="c_white">#ffffff</color>
+    <color name="c_mainback">#EBEFF0</color>
+    <color name="c_codea">#AAAAAA</color>
+    <color name="c_code96">#969696</color>
+    <color name="c_nortext">#4D4D4D</color>
+    <color name="c_code3E">#3E3E3E</color>
+    <color name="c_black15">#151515</color>
+    <color name="c_black1D">#1D1D1D</color>
+    <color name="c_doginfo">#252F39</color>
+    <color name="c_pricered">#F5352E</color>
+    <color name="c_mainred">#F44C46</color>
+    <color name="c_commandtxt">#624326</color>
+    <color name="c_gpink">#F6507B</color>
+    <color name="c_gblue">#005899</color>
+    <color name="c_progress">#006280</color>
+    <color name="c_progback">#e9eaef</color>
+    <color name="c_percent">#252F39</color>
+
+</resources>

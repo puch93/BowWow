@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/pettranslate_bg_chat_soundonbg_200114" android:state_pressed="false"/>
+    <item android:drawable="@drawable/pettranslate_bg_chat_sounddefbg_200114" android:state_pressed="true"/>
+
+</selector>

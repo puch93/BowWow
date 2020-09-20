@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/pettranslate_img_splash_background_191218"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:layout_width="229dp"
+        android:layout_height="70dp"
+        android:src="@drawable/img_splash_title" />
+
+    <ImageView
+        android:id="@+id/iv_splashani"
+        android:layout_width="wrap_content"
+        android:layout_height="127.7dp"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="21dp"
+        android:layout_marginBottom="27dp" />
+
+    <ImageView
+        android:layout_width="195dp"
+        android:layout_height="53dp"
+        android:src="@drawable/img_splash_text" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/version_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dp"
+        android:layout_marginBottom="31dp"
+        android:textColor="#e6ffffff"
+        tools:text="V1.0 로딩중…"
+        />
+</LinearLayout>

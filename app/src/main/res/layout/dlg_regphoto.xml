@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_command_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/xxxlarge_text"
+            android:background="@drawable/pettranslate_bg_pop_backtopcolor_191125"
+            android:text="사진등록"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="@drawable/pettranslate_bg_pop_backbottom_191125"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btn_camera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/middle_text"
+                android:textColor="@color/color_paybtn"
+                android:background="@drawable/pettranslate_bg_edit_inputbg_191125"
+                android:text="사진촬영"/>
+
+            <TextView
+                android:id="@+id/btn_album"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/middle_text"
+                android:textColor="@color/color_paybtn"
+                android:background="@drawable/pettranslate_bg_edit_inputbg_191125"
+                android:text="앨범선택"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

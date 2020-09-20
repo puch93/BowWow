@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_dropdown_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_white">
+
+        <TextView
+            android:id="@+id/tv_dropdown_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/c_nortext"
+            android:textSize="@dimen/xxxsmall_text"/>
+
+    </LinearLayout>
+
+</LinearLayout>

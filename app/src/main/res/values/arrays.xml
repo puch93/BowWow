@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="breed_m3val">
+        <item>72,21,83,42,91</item>
+        <item>71,27,32,48,93</item>
+    </string-array>
+
+    <string-array name="gender">
+        <item>성별을 선택해주세요</item>
+        <item>남</item>
+        <item>여</item>
+    </string-array>
+
+    <string-array name="name_type">
+        <item>한글이름</item>
+        <item>영어이름</item>
+    </string-array>
+
+    <string-array name="breed_list">
+        <item>견종을 선택해주세요</item>
+        <item>요크셔테리어</item>
+        <item>비글</item>
+        <item>닥스훈트</item>
+        <item>푸들</item>
+        <item>시추</item>
+        <item>슈나우저</item>
+        <item>치와와</item>
+        <item>포메라니안</item>
+        <item>셔틀랜드 쉽독</item>
+        <item>보스턴테리어</item>
+        <item>말티즈</item>
+        <item>파피용</item>
+        <item>비숑 프리제</item>
+        <item>미니어처 핀셔(미니핀)</item>
+        <item>페키니즈</item>
+        <item>불독</item>
+        <item>잉글리쉬 코커 스패니얼</item>
+        <item>아메리칸 코커 스패니얼</item>
+        <item>웰시코기 펨브로크</item>
+        <item>웰시코기 카디건</item>
+        <item>보더콜리</item>
+        <item>샤페이</item>
+        <item>사모예드</item>
+        <item>재패니즈 스피츠</item>
+        <item>진돗개</item>
+        <item>래브라도 리트리버</item>
+        <item>저먼 세퍼드 도그</item>
+        <item>골든 리트리버</item>
+        <item>로트와일러</item>
+        <item>그레이트 데인</item>
+        <item>시베리안 허스키</item>
+        <item>러프 콜리</item>
+        <item>스무드 콜리</item>
+        <item>알래스칸 맬러뮤트</item>
+        <item>달마시안</item>
+        <item>그레이트 피레니즈</item>
+        <item>올드 잉글리쉬 쉽독</item>
+    </string-array>
+
+</resources>

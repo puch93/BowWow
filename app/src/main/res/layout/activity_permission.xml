@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/pettranslate_bg_titlebar_191125"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/xxlarge_text"
+                android:textColor="@color/c_black15"
+                android:text="접근권한 허용"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#DCDCDC"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="바우와우 서비스를 이용하기 위해"
+                    android:textColor="@color/c_nortext"
+                    android:textSize="@dimen/middle_text" />
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="다음과 같은 "
+                        android:textColor="@color/c_nortext"
+                        android:textSize="@dimen/middle_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="권한 허용"
+                        android:textColor="@color/c_mainred"
+                        android:textSize="@dimen/middle_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="이 필요합니다."
+                        android:textColor="@color/c_nortext"
+                        android:textSize="@dimen/middle_text" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="필수 접근 권한"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/middle_text"
+                    android:background="@drawable/pettranslate_bg_pop_backtopcolor_191125"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_back"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold"
+                            android:includeFontPadding="false"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@color/c_black15"
+                            android:text="전화번호"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textColor="@color/c_nortext"
+                            android:text="@string/permi_phone"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:background="#dcdcdc"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold"
+                            android:layout_marginRight="8dp"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/c_black15"
+                            android:text="저장공간"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textColor="@color/c_nortext"
+                            android:text="@string/permi_storage"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:background="#dcdcdc"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold"
+                            android:layout_marginRight="8dp"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/c_black15"
+                            android:text="마이크"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/middle_text"
+                            android:textColor="@color/c_nortext"
+                            android:text="@string/permi_mic"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/sel_btn_longbottom"
+                    android:gravity="center"
+                    android:text="동의하기"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/xlarge_text"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</layout>

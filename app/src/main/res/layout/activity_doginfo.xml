@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_white"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp">
+
+            <FrameLayout
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/btn_back" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="반려견 정보입력"
+                android:textColor="#151515"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdge="none"
+            android:fillViewport="true"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f7f9fa" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="19.7dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="15.7dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="프로필사진"
+                            android:textColor="#4d4d4d"
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="최대5장"
+                            android:textColor="#aaaaaa"
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15.7dp"
+                        android:layout_marginBottom="20dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:background="#f7f9fa" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15.7dp"
+                        android:layout_marginTop="20dp"
+                        android:text="정보입력"
+                        android:textColor="#4d4d4d"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="42.7dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="15.7dp"
+                        android:layout_marginRight="16dp"
+                        android:gravity="center_vertical">
+
+                        <kr.core.bowwow.customWidget.CustomSpinner
+                            android:id="@+id/spn_name_type"
+                            android:layout_width="110dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/shape_rec_round_stroke"
+                            android:overlapAnchor="false"
+                            android:popupBackground="@null"
+                            android:spinnerMode="dropdown" />
+
+
+                        <EditText
+                            android:id="@+id/et_kname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/shape_rec_round_stroke"
+                            android:hint="이름을 입력해주세요"
+                            android:letterSpacing="-0.04"
+                            android:paddingLeft="16dp"
+                            android:textColor="#4d4d4d"
+                            android:textColorHint="#aaaaaa"
+                            android:textSize="13dp" />
+                    </LinearLayout>
+
+
+                    <kr.core.bowwow.customWidget.CustomSpinner
+                        android:id="@+id/spn_breed"
+                        android:layout_width="match_parent"
+                        android:layout_height="42.7dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/shape_rec_round_stroke"
+                        android:overlapAnchor="false"
+                        android:popupBackground="@null"
+                        android:spinnerMode="dropdown" />
+
+                    <kr.core.bowwow.customWidget.CustomSpinner
+                        android:id="@+id/spn_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="42.7dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/shape_rec_round_stroke"
+                        android:overlapAnchor="false"
+                        android:popupBackground="@null"
+                        android:spinnerMode="dropdown" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_britharea"
+                        android:layout_width="match_parent"
+                        android:layout_height="42.7dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/shape_rec_round_stroke"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_birth"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="16dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/c_nortext"
+                            android:textSize="@dimen/xxxsmall_text" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/btn_complete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/sel_btn_longbottom"
+                    android:gravity="center"
+                    android:text="작성완료"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/xlarge_text"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
+</layout>

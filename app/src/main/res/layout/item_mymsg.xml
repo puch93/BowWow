@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="50dp"
+    android:paddingBottom="8dp"
+    android:gravity="right">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_mymsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:includeFontPadding="false"
+            android:padding="12dp"
+            android:textColor="@color/c_nortext"
+            android:textSize="@dimen/xxsmall_text"
+            android:background="@drawable/bg_chat_balloon_02"
+            tool:text="그래 산이야 놀아보자!" />
+
+<!--        <LinearLayout-->
+<!--            android:layout_marginTop="6dp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="right"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_regdate"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:textColor="@color/c_codea"-->
+<!--                android:textSize="@dimen/xsmall_text"-->
+<!--                tool:text="오후 3:13"/>-->
+
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="128dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:layout_marginLeft="4dp"-->
+<!--                android:paddingLeft="8dp"-->
+<!--                android:paddingRight="8dp"-->
+<!--                android:background="@drawable/pettranslate_bg_chat_chat02_191125"-->
+<!--                android:orientation="horizontal">-->
+<!--&lt;!&ndash;                android:padding="8dp"&ndash;&gt;-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/btn_playstop"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:paddingRight="4dp"-->
+<!--                    android:src="@drawable/sel_chat_btnplaystop" />-->
+<!--                &lt;!&ndash;android:layout_marginRight="4dp"&ndash;&gt;-->
+
+<!--                &lt;!&ndash; 그려질 뷰 넣기&ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/drawview"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:paddingTop="4dp"-->
+<!--                    android:paddingBottom="4dp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:layout_weight="1" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_playtime"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="4dp"-->
+<!--                    android:textColor="@color/c_nortext"-->
+<!--                    android:textSize="@dimen/xxsmall_text"-->
+<!--                    tool:text="0:15"/>-->
+
+<!--            </LinearLayout>-->
+
+
+<!--        </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_regdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:textColor="@color/c_codea"
+                android:textSize="@dimen/xsmall_text"
+                tool:text="오후 3:13"/>
+
+
+            <LinearLayout
+                android:id="@+id/all_area"
+                android:layout_width="128dp"
+                android:layout_height="34.7dp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:background="@drawable/bg_chat_sound"
+                android:orientation="horizontal">
+                <!--                android:padding="8dp"-->
+
+                <ImageView
+                    android:id="@+id/btn_playstop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingRight="4dp"
+                    android:src="@drawable/btn_chat_play" />
+                <!--android:layout_marginRight="4dp"-->
+
+                <!-- 그려질 뷰 넣기-->
+                <LinearLayout
+                    android:id="@+id/drawview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tv_playtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/xxsmall_text"
+                    tool:text="0:15"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

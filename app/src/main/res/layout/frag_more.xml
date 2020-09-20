@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:background="@color/c_white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="더보기"
+                android:includeFontPadding="false"
+                android:textColor="#f44c46"
+                android:textSize="23dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f0f1f2"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/c_white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_marginTop="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="16dp">
+
+                            <ImageView
+                                android:id="@+id/iv_profimg"
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:adjustViewBounds="true"
+                                android:src="@drawable/pettranslate_bg_more_parea_200117" />
+
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/ll_namearea"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_ename"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/c_black15"
+                                    android:ellipsize="end"
+                                    android:textSize="@dimen/xxlarge_text"
+                                    android:textStyle="bold"
+                                    tool:text="San E" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginRight="8dp"
+                                    android:src="@drawable/pettranslate_img_main_ptextcutline_191125" />
+
+                                <TextView
+                                    android:id="@+id/tv_kname"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/c_black15"
+                                    android:ellipsize="end"
+                                    android:textSize="@dimen/xxlarge_text"
+                                    android:textStyle="bold"
+                                    tool:text="산이" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_marginTop="8dp"
+                                android:id="@+id/tv_breed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/c_doginfo"
+                                android:textSize="@dimen/xxxsmall_text"
+                                app:layout_constraintLeft_toLeftOf="@+id/ll_namearea"
+                                app:layout_constraintTop_toBottomOf="@+id/ll_namearea"
+                                tool:text="재패니즈 스피츠 [Japanese Spitz]" />
+
+                            <LinearLayout
+                                android:layout_marginTop="8dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/pettranslate_img_more_boneicon01_200117"/>
+
+                                <TextView
+                                    android:id="@+id/tv_bonecnt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:includeFontPadding="false"
+                                    android:layout_marginLeft="8dp"
+                                    android:textSize="@dimen/xxxsmall_text"
+                                    android:textColor="@color/c_mainred"
+                                    tool:text="뼈다귀 갯수"
+                                    />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/mydog_modify"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="4dp"
+                            android:src="@drawable/pettranslate_btn_more_set_200117" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_payment"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:padding="16dp"
+                        android:gravity="center"
+                        android:background="@drawable/pettranslate_bg_more_paybg_200117"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pettranslate_img_more_boneicon02_200117"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/middle_text"
+                                android:textColor="@color/c_white"
+                                android:text="뼈다귀 충전소"/>
+
+                            <TextView
+                                android:layout_marginTop="6dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:textSize="@dimen/xxsmall_text"
+                                android:textColor="@color/c_white"
+                                android:text="뼈다귀를 충전해서 더 즐겁게 이용해보세요"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/ad_view"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:adjustViewBounds="true"/>-->
+
+                <FrameLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include
+                        android:id="@+id/banner_area"
+                        layout="@layout/banner_layout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_pushstate"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/c_white"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="18dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/pettranslate_img_more_moreicon01_200117"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:textSize="@dimen/xxxlarge_text"
+                            android:textColor="@color/c_black1D"
+                            android:text="푸시알림"/>
+
+                        <TextView
+                            android:id="@+id/tv_pushstate"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:textSize="@dimen/middle_text"
+                            android:textColor="@color/c_codea"
+                            android:text="켜짐"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/pettranslate_img_1pxline_200117"/>
+
+                <LinearLayout
+                    android:id="@+id/btn_scenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/c_white"
+                    android:padding="18dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/pettranslate_img_more_moreicon02_200117"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="@dimen/xxxlarge_text"
+                        android:textColor="@color/c_black1D"
+                        android:text="고객센터"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/pettranslate_img_1pxline_200117"/>
+
+                <LinearLayout
+                    android:id="@+id/btn_qna"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:padding="18dp"
+                    android:background="@color/c_white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/pettranslate_img_more_moreicon03_200117"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="@dimen/xxxlarge_text"
+                        android:textColor="@color/c_black1D"
+                        android:text="문의하기"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/pettranslate_img_1pxline_200117"/>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/coupa_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</layout>

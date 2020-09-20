@@ -1,0 +1,61 @@
+
+WhistleApi
+
+this.minFrequency = 600.0D;
+this.maxFrequency = 1.7976931348623157E308D;
+this.minIntensity = 100.0D;
+this.maxIntensity = 100000.0D;
+this.minStandardDeviation = 0.10000000149011612D;
+this.maxStandardDeviation = 1.0D;
+this.highPass = 100;
+this.lowPass = 10000;
+this.minNumZeroCross = 50;
+this.maxNumZeroCross = 200;
+this.numRobust = 10;
+
+=====================================================
+
+ClapApi
+
+this.minFrequency = 1000.0D;
+this.maxFrequency = 1.7976931348623157E308D;
+this.minIntensity = 10000.0D;
+this.maxIntensity = 100000.0D;
+this.minStandardDeviation = 0.0D;
+this.maxStandardDeviation = 0.05000000074505806D;
+this.highPass = 100;
+this.lowPass = 10000;
+this.minNumZeroCross = 100;
+this.maxNumZeroCross = 500;
+this.numRobust = 4;
+
+=====================================================
+
+frequency range from 250 to 3200 Hz
+DogApi
+
+this.minFrequency = ;
+this.maxFrequency = 1.7976931348623157E308D;
+this.minIntensity = ;
+this.maxIntensity = 100000.0D;
+this.minStandardDeviation = ;
+this.maxStandardDeviation = ;
+this.highPass = 100;
+this.lowPass = 10000;
+this.minNumZeroCross = ;
+this.maxNumZeroCross = ;
+this.numRobust = ;
+
+=====================================================
+
+this.minFrequency = 200.0D;
+this.maxFrequency = 3200.00;
+this.minIntensity = 13000.0D;
+this.maxIntensity = 36000.0D;
+this.minStandardDeviation = 0.0D;
+this.maxStandardDeviation = 0.06D;
+this.highPass = 100;
+this.lowPass = 10000;
+this.minNumZeroCross = 45;
+this.maxNumZeroCross = 130;
+this.numRobust = 4;

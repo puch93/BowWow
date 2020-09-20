@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_white"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 반려견"
+                android:textColor="#f44c46"
+                android:textSize="23dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/mydog_modify"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/btn_set" />
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f6f6f6" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nsc_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/c_mainback">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_pimg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/pettranslate_bg_main_photoarea_200117"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/pettranslate_bg_main_profilebg_200117"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingLeft="25dp"
+                            android:paddingRight="25dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/iv_pimg"
+                            app:layout_constraintTop_toBottomOf="@+id/iv_pimg">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_ename"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:includeFontPadding="false"
+                                        android:singleLine="true"
+                                        android:textColor="@color/c_black15"
+                                        android:textSize="30dp"
+                                        android:textStyle="bold"
+                                        tool:text="San E" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="26dp"
+                                        android:layout_marginLeft="7dp"
+                                        android:background="@drawable/img_mypet_categorybg_01"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal"
+                                        android:paddingLeft="8dp"
+                                        android:paddingRight="8dp">
+
+                                        <ImageView
+                                            android:layout_width="15dp"
+                                            android:layout_height="15dp"
+                                            android:src="@drawable/img_mypet_categoryicon_01" />
+
+                                        <TextView
+                                            android:id="@+id/age"
+                                            tool:text="5"
+                                            android:layout_width="wrap_content"
+                                            android:includeFontPadding="false"
+                                            android:layout_marginLeft="3.7dp"
+                                            android:textStyle="bold"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="#151515"
+                                            android:textSize="13dp" />
+
+                                        <TextView
+                                            android:text="살"
+                                            android:layout_width="wrap_content"
+                                            android:includeFontPadding="false"
+                                            android:textStyle="bold"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="#151515"
+                                            android:textSize="13dp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="26dp"
+                                        android:layout_marginLeft="5dp"
+                                        android:background="@drawable/img_mypet_categorybg_02"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal"
+                                        android:paddingLeft="8dp"
+                                        android:paddingRight="8dp">
+
+                                        <ImageView
+                                            android:layout_width="15dp"
+                                            android:layout_height="15dp"
+                                            android:src="@drawable/img_mypet_categoryicon_02" />
+
+                                        <TextView
+                                            android:id="@+id/day"
+                                            tool:text="1,825"
+                                            android:layout_width="wrap_content"
+                                            android:includeFontPadding="false"
+                                            android:layout_marginLeft="3.7dp"
+                                            android:textStyle="bold"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="#151515"
+                                            android:textSize="13dp" />
+
+                                        <TextView
+                                            android:text="일"
+                                            android:layout_width="wrap_content"
+                                            android:includeFontPadding="false"
+                                            android:textStyle="bold"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="#151515"
+                                            android:textSize="13dp" />
+                                    </LinearLayout>
+
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tv_breed"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/c_black15"
+                                    android:textSize="@dimen/middle_text"
+                                    android:textStyle="bold"
+                                    tool:text="포메라니안" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="4dp"
+                                            android:src="@drawable/pettranslate_img_main_profileicon03_191125" />
+
+                                        <TextView
+                                            android:id="@+id/tv_brithday"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:gravity="center_vertical"
+                                            android:textColor="@color/c_code3E"
+                                            android:textSize="15dp"
+                                            android:textStyle="bold"
+                                            tool:text="2019.1.15" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="8dp"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/tv_gender"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="4dp"
+                                            android:gravity="center_vertical"
+                                            android:textColor="@color/c_doginfo"
+                                            android:textSize="15dp"
+                                            android:textStyle="bold"
+                                            tool:text="남" />
+
+                                        <ImageView
+                                            android:id="@+id/iv_genderimg"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <ImageButton
+                                android:id="@+id/btn_regphoto"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:background="@drawable/pettranslate_btn_main_editprofile_200117"
+                                android:elevation="2dp" />
+
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <TextView
+                            android:id="@+id/btn_m1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/sel_btnm1"
+                            android:gravity="center"
+                            android:text="유래"
+                            android:textColor="@color/c_white"
+                            android:textSize="@dimen/middle_text" />
+
+                        <TextView
+                            android:id="@+id/btn_m2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/sel_btnm2"
+                            android:gravity="center"
+                            android:text="성격"
+                            android:textColor="@color/c_white"
+                            android:textSize="@dimen/middle_text" />
+
+
+                        <TextView
+                            android:id="@+id/btn_m3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/sel_btnm3"
+                            android:gravity="center"
+                            android:text="질병"
+                            android:textColor="@color/c_white"
+                            android:textSize="@dimen/middle_text" />
+
+                        <TextView
+                            android:id="@+id/btn_m4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/sel_btnm4"
+                            android:gravity="center"
+                            android:text="특징"
+                            android:textColor="@color/c_white"
+                            android:textSize="@dimen/middle_text" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_statsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:descendantFocusability="blocksDescendants"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <ImageButton
+                android:id="@+id/btn_movetop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/pettranslate_btn_top_200117"
+                android:elevation="2dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/pettranslate_bg_main_profilebg_200117"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_breed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textStyle="bold"
+            android:textColor="@color/c_black15"
+            android:textSize="@dimen/xxxlarge_text"
+            tool:text="포메라니안"/>
+
+        <TextView
+            android:id="@+id/tv_tabtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/c_black15"
+            android:textSize="@dimen/middle_text"
+            android:gravity="center"
+            android:background="@drawable/pettranslate_bg_main_category01_200117"
+            tool:text="유래"/>
+
+        <TextView
+            android:layout_marginTop="14dp"
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/c_nortext"
+            android:textSize="@dimen/middle_text"
+            android:lineSpacingExtra="4dp"
+            tool:text="포메라니안 설명"/>
+
+    </LinearLayout>
+
+</LinearLayout>

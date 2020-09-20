@@ -1,0 +1,284 @@
+package kr.core.bowwow.fragments;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import kr.core.bowwow.R;
+import kr.core.bowwow.activity.MydogProfAct;
+import kr.core.bowwow.activity.ServiceCenterAct;
+import kr.core.bowwow.activity.TermsAct;
+import kr.core.bowwow.app;
+import kr.core.bowwow.databinding.FragMoreBinding;
+import kr.core.bowwow.dialogAct.DlgCommandPlay;
+import kr.core.bowwow.dialogAct.DlgPayment;
+import kr.core.bowwow.dto.pref.SettingPref;
+import kr.core.bowwow.dto.pref.UserPref;
+import kr.core.bowwow.network.HttpResult;
+import kr.core.bowwow.network.NetUrls;
+import kr.core.bowwow.network.ReqBasic;
+import kr.core.bowwow.service.ForegroundService;
+import kr.core.bowwow.utils.LayoutWebView;
+import kr.core.bowwow.utils.MyUtil;
+import kr.core.bowwow.utils.StringUtil;
+
+public class More extends Fragment implements View.OnClickListener {
+    FragMoreBinding binding;
+    Activity act;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.frag_more, container, false);
+        act = getActivity();
+
+        binding.title.setTypeface(app.tf_bmjua);
+
+        setClickListener();
+//        setBanner();
+
+        Glide.with(getActivity())
+                .load(app.myDogImg)
+                .transform(new CircleCrop())
+                .into(binding.ivProfimg);
+
+        binding.tvKname.setText(app.myDogKname);
+        binding.tvBreed.setText(app.myDogBreed);
+
+        if (SettingPref.isPushReceive(getActivity())) {
+            binding.tvPushstate.setText("켜짐");
+        } else {
+            binding.tvPushstate.setText("꺼짐");
+        }
+
+        setBanner();
+
+        getMypoint();
+
+        getCoupaBanner();
+
+        return binding.getRoot();
+    }
+
+    private void setClickListener() {
+
+        binding.mydogModify.setOnClickListener(this);
+        binding.btnPayment.setOnClickListener(this);
+        binding.btnPushstate.setOnClickListener(this);
+        binding.btnScenter.setOnClickListener(this);
+        binding.btnQna.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMypoint();
+    }
+
+    private void getMypoint() {
+        ReqBasic myPoint = new ReqBasic(getActivity(), NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getMypoint: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 등록하였습니다.","url":"", "point":"11"}
+                if (resultData.getResult() != null) {
+
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.has("point")) {
+
+                            if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
+                                if (MyUtil.isNull(jo.getString("point"))) {
+                                    binding.tvBonecnt.setText("0");
+                                } else {
+                                    binding.tvBonecnt.setText(jo.getString("point"));
+                                }
+                            } else {
+                                binding.tvBonecnt.setText("구독권 이용중");
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                            binding.tvBonecnt.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        myPoint.addParams("CONNECTCODE", "APP");
+        myPoint.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        myPoint.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
+        myPoint.addParams("dbControl", "getMemberPoint");
+        myPoint.addParams("MEMCODE", UserPref.getIdx(getActivity()));
+        myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
+        myPoint.execute(true, false);
+
+    }
+
+    private void setBanner() {
+        if (MyUtil.isNull(app.bannerState)) {
+            binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
+            binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
+            // admob 설정
+
+            binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
+//            binding.bannerArea.getRoot().setVisibility(View.GONE);
+        } else {
+            switch (app.bannerState) {
+                case MyUtil.BANNER:
+                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
+                    binding.bannerArea.bannerAdmob.setVisibility(View.GONE);
+                    binding.bannerArea.bannerCore.setVisibility(View.VISIBLE);
+
+                    // 이미지 세팅
+                    Glide.with(this)
+                            .load(app.bannerImg)
+                            .into(binding.bannerArea.bannerCore);
+                    binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (MyUtil.isNull(app.bannerLink)) {
+                                Toast.makeText(getContext(), "연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.bannerLink)));
+                            }
+                        }
+                    });
+                    break;
+
+                case MyUtil.ADMOB:
+                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
+                    binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
+                    // admob 설정
+                    binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
+                    break;
+                case MyUtil.NONE:
+                    binding.bannerArea.getRoot().setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    private void getCoupaBanner() {
+        ReqBasic server = new ReqBasic(act, "https://coupang.adamstore.co.kr/lib/control.siso") {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                if (resultData.getResult() != null) {
+                    final String res = resultData.getResult();
+
+                    if (!StringUtil.isNull(res)) {
+                        act.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    //Log.d(HoUtils.TAG, "결과 : " + result);
+                                    final JSONObject jo = new JSONObject(res);
+                                    if (StringUtil.getStr(jo, "result").equalsIgnoreCase("Y")) {
+                                        JSONObject job = jo.getJSONObject("data");
+
+                                        String coupang_url = StringUtil.getStr(job, "coupang_url");
+                                        String banner = StringUtil.getStr(job, "banner");
+
+                                        Log.i("TEST_HOME", "coupang_url: " + coupang_url);
+                                        Log.i("TEST_HOME", "banner: " + banner);
+
+
+                                        Glide.with(act).load(banner).into(binding.coupaBanner);
+                                        binding.coupaBanner.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(act, LayoutWebView.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                            }
+                                        });
+                                    } else {
+
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                }
+            }
+        };
+
+        server.addParams("dbControl", "getCoupangPartnersInfo");
+        server.addParams("si_idx", "7");
+        server.execute(true, false);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mydog_modify:
+                startActivity(new Intent(getActivity(), MydogProfAct.class));
+                break;
+            case R.id.btn_payment:
+                startActivity(new Intent(getActivity(), DlgPayment.class));
+                break;
+            case R.id.btn_pushstate:
+                SettingPref.setPushReceive(getActivity(), !SettingPref.isPushReceive(getActivity()));
+                if (SettingPref.isPushReceive(getActivity())) {
+                    Toast.makeText(getActivity(), "푸시알림 켜짐", Toast.LENGTH_SHORT).show();
+                    binding.tvPushstate.setText("켜짐");
+                } else {
+                    Toast.makeText(getActivity(), "푸시알림 꺼짐", Toast.LENGTH_SHORT).show();
+                    binding.tvPushstate.setText("꺼짐");
+                }
+                break;
+            case R.id.btn_scenter:
+                startActivity(new Intent(getActivity(), ServiceCenterAct.class));
+                break;
+            case R.id.btn_qna:
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("text/html");
+                email.setPackage("com.google.android.gm");
+                // email setting 배열로 해놔서 복수 발송 가능
+                String[] address = {"neosdisc1234@gmail.com"};
+                email.putExtra(Intent.EXTRA_EMAIL, address);
+                email.putExtra(Intent.EXTRA_SUBJECT, "바우와우 문의하기");
+                email.putExtra(Intent.EXTRA_TEXT, "");
+                startActivity(email);
+                break;
+        }
+    }
+}

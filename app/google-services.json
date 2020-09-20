@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "957246590281",
+    "firebase_url": "https://bowwow-bebcb.firebaseio.com",
+    "project_id": "bowwow-bebcb",
+    "storage_bucket": "bowwow-bebcb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957246590281:android:8ee75a434f06b4a90c9e98",
+        "android_client_info": {
+          "package_name": "kr.core.bowwow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957246590281-svb8bi47of7gjhd0ijsf3vs8m1m8tff8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCftpgl54m3AZ1OYCAS4XzRRMMkvsKSIjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957246590281-svb8bi47of7gjhd0ijsf3vs8m1m8tff8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

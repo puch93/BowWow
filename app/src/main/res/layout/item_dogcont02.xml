@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/pettranslate_bg_main_profilebg_200117"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tabtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/c_black15"
+            android:textSize="@dimen/middle_text"
+            android:text="성격"
+            android:gravity="center"
+            android:background="@drawable/pettranslate_bg_main_category02_200117"/>
+
+        <TextView
+            android:layout_marginTop="14dp"
+            android:id="@+id/tv_content"
+            android:textColor="@color/c_nortext"
+            android:textSize="@dimen/middle_text"
+            android:lineSpacingExtra="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_marginTop="22dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_s01title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_black15"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/middle_text"
+                        android:text="자신감"
+                        tool:text="활동성"/>
+
+                    <TextView
+                        android:id="@+id/tv_s01num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_mainred"
+                        android:textSize="@dimen/middle_text"
+                        tool:text="91"/>
+
+                    <TextView
+                        android:id="@+id/tv_ptext1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_percent"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/middle_text"
+                        android:text="%"/>
+
+                </LinearLayout>
+
+                <com.devzone.fillprogresslayout.FillProgressLayout
+                    android:id="@+id/stats01"
+                    android:layout_marginTop="6dp"
+                    app:fpl_backgroundColor="@color/c_progback"
+                    app:fpl_progressColor="@color/c_progress"
+                    app:fpl_isRounded="true"
+                    app:fpl_roundedCornerRadius="20.0"
+                    app:fpl_progressDirection="left_to_right"
+                    app:fpl_shouldRestart="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_s02title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/c_black15"
+                        android:textSize="@dimen/middle_text"
+                        android:text="독립성"
+                        tool:text="호기심"/>
+
+                    <TextView
+                        android:id="@+id/tv_s02num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_mainred"
+                        android:textSize="@dimen/middle_text"
+                        tool:text="87"/>
+
+                    <TextView
+                        android:id="@+id/tv_ptext2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_percent"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/middle_text"
+                        android:text="%"/>
+
+                </LinearLayout>
+
+                <com.devzone.fillprogresslayout.FillProgressLayout
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/stats02"
+                    app:fpl_backgroundColor="@color/c_progback"
+                    app:fpl_progressColor="@color/c_progress"
+                    app:fpl_isRounded="true"
+                    app:fpl_roundedCornerRadius="20.0"
+                    app:fpl_progressDirection="left_to_right"
+                    app:fpl_shouldRestart="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_s03title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/c_black15"
+                        android:textSize="@dimen/middle_text"
+                        android:text="사교성"
+                        tool:text="공격성"/>
+
+                    <TextView
+                        android:id="@+id/tv_s03num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_mainred"
+                        android:textSize="@dimen/middle_text"
+                        tool:text="79"/>
+
+                    <TextView
+                        android:id="@+id/tv_ptext3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_percent"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/middle_text"
+                        android:text="%"/>
+
+                </LinearLayout>
+
+                <com.devzone.fillprogresslayout.FillProgressLayout
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/stats03"
+                    app:fpl_backgroundColor="@color/c_progback"
+                    app:fpl_progressColor="@color/c_progress"
+                    app:fpl_isRounded="true"
+                    app:fpl_roundedCornerRadius="20.0"
+                    app:fpl_progressDirection="left_to_right"
+                    app:fpl_shouldRestart="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_s04title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/c_black15"
+                        android:textSize="@dimen/middle_text"
+                        android:text="적응력"
+                        tool:text="학습능력"/>
+
+                    <TextView
+                        android:id="@+id/tv_s04num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_mainred"
+                        android:textSize="@dimen/middle_text"
+                        tool:text="60"/>
+
+                    <TextView
+                        android:id="@+id/tv_ptext4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/c_percent"
+                        android:textSize="@dimen/middle_text"
+                        android:textStyle="bold"
+                        android:text="%"/>
+
+                </LinearLayout>
+
+                <com.devzone.fillprogresslayout.FillProgressLayout
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/stats04"
+                    app:fpl_backgroundColor="@color/c_progback"
+                    app:fpl_progressColor="@color/c_progress"
+                    app:fpl_isRounded="true"
+                    app:fpl_roundedCornerRadius="20.0"
+                    app:fpl_progressDirection="left_to_right"
+                    app:fpl_shouldRestart="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
