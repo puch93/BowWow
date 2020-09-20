@@ -37,14 +37,14 @@ public class CoupangReceiver extends BroadcastReceiver {
     public static final String TAG = "TEST_HOME";
     Intent intent;
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.e("TEST_HOME", "onReceive");
-        this.context = context;
-        this.intent = intent;
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("TEST_HOME", "onReceive");
+            this.context = context;
+            this.intent = intent;
 
-        doProcess();
-        setAlarm();
+            doProcess();
+            setAlarm();
     }
 
     private void doProcess() {

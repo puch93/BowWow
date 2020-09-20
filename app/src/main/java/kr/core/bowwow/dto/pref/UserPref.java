@@ -17,6 +17,18 @@ public class UserPref {
         editor.commit();
     }
 
+    public static String getAlarmCoupa(Context context){
+        SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
+        return pref.getString("alarm_coupa","");
+    }
+
+    public static void setAlarmCoupa(Context context,String idx){
+        SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("alarm_coupa",idx);
+        editor.commit();
+    }
+
     public static String getFcm(Context context){
         SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
         return pref.getString("fcm","");

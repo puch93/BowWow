@@ -2,6 +2,9 @@ package kr.core.bowwow.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -57,6 +60,7 @@ import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.MultipartUtility;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
+import kr.core.bowwow.utils.CoupangReceiver;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
@@ -278,6 +282,41 @@ public class SplashAct extends Activity {
         server.execute(true, false);
     }
 
+
+    private void alarmSetting() {
+        Log.i("TEST_HOME", "alarmSetting: ");
+        /* initialize alarm service */
+        Calendar mCalendar = Calendar.getInstance();
+
+
+        if (!StringUtil.isNull(UserPref.getAlarmCoupa(act))) {
+            //푸시 알림 셋팅값이 있으면, 설정된 푸시시간의 12시 30분 이후에 알람등록.
+            //푸시알림과 겹치지 않게 하기 위함.
+            mCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(UserPref.getAlarmCoupa(act)) + 12);
+            mCalendar.set(Calendar.MINUTE, 30);
+            mCalendar.set(Calendar.SECOND, 0);
+        } else {
+            //푸시 알림 셋팅값이 없으면, 현재시간으로 부터 1시간 후  값으로 설정
+            mCalendar.add(Calendar.MINUTE, 1);
+        }
+
+        UserPref.setAlarmCoupa(act, mCalendar.getTimeInMillis() + "");
+
+        /* set alarm manager */
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        /* set pending intent */
+        PendingIntent pendingIntent01 = PendingIntent.getBroadcast(act, 10, new Intent(act, CoupangReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /* register alarm (버전별로 따로) */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent01);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent01);
+        } else {
+            manager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent01);
+        }
+    }
 
 
     private void checkVer() {

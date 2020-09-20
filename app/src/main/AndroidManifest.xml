@@ -41,7 +41,6 @@
         <activity android:name=".activity.SplashAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -55,10 +54,12 @@
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+
+
+
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/status_matarial"
