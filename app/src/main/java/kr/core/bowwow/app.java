@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +47,7 @@ public class app extends Application {
     public static String bannerImg;
 
     // 임시(서버 연동 후 제거)
+    public static ArrayList<String> myDogImgArray = new ArrayList<>();
     public static String myDogImg;
     public static String myDogBreed;
     public static String myDogGender;

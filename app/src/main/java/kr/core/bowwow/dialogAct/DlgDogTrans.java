@@ -100,6 +100,7 @@ public class DlgDogTrans extends Activity {
         }
 
         Glide.with(this).load(app.myDogImg).transform(new CircleCrop()).into(binding.dogImage);
+        Glide.with(this).load(R.raw.dogtop).transform(new CircleCrop()).into(binding.dogImageGif);
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override

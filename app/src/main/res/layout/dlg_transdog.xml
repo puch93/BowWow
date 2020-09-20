@@ -107,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
-                    android:text="가 알아 들을수 있는"
+                    android:text="의 소리를"
                     android:textColor="@color/c_nortext"
                     android:textSize="15dp" />
             </LinearLayout>
@@ -117,7 +117,7 @@
                 android:layout_marginTop="5.7dp"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:text="소리로 변환중입니다"
+                android:text="변환중입니다"
                 android:textColor="@color/c_nortext"
                 android:textSize="15dp" />
 

@@ -65,7 +65,6 @@
             android:id="@+id/rcv_cmdlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"/>
 

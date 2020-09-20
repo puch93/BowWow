@@ -28,6 +28,12 @@ public class AllOfDecoration extends RecyclerView.ItemDecoration {
                     outRect.left = act.getResources().getDimensionPixelSize(R.dimen.dimen_16);
                 }
                 break;
+
+            case "command":
+                if (position < 3) {
+                    outRect.top = act.getResources().getDimensionPixelSize(R.dimen.dimen_8);
+                }
+                break;
         }
     }
 }

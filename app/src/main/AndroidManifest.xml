@@ -83,6 +83,9 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
+            android:name=".activity.DogInfoEditAct"
+            android:theme="@style/status_matarial" />
+        <activity
             android:name=".activity.PermissionAct"
             android:theme="@style/status_matarial" />
         <activity

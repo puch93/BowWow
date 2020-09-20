@@ -58,6 +58,7 @@ public class DlgPersonTrans extends Activity {
         binding.dogName.setText(app.myDogKname);
 
         Glide.with(this).load(app.myDogImg).transform(new CircleCrop()).into(binding.dogImage);
+        Glide.with(this).load(R.raw.ptodog).transform(new CircleCrop()).into(binding.dogImageGif);
 
         if (!MyUtil.isNull(getIntent().getStringExtra("pmsg"))){
             msg = getIntent().getStringExtra("pmsg");

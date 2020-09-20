@@ -51,9 +51,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
                 android:background="@drawable/pettranslate_bg_pop_backbottom_191125"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -67,7 +67,40 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
+                        android:layout_marginBottom="8dp"
                         android:src="@drawable/bg_pop_banner" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="87.7dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/img_pop_bannertext" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="뼈다귀를 충전해서\n내 댕댕이와 무제한으로\n채팅하고 놀아주개! "
+                            android:textColor="#151515"
+                            android:textSize="13dp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/gif_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:adjustViewBounds="true" />
 
 
                 </FrameLayout>
@@ -75,53 +108,50 @@
                 <LinearLayout
                     android:id="@+id/ll_subitem"
                     android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_height="45dp"
                     android:background="@drawable/sel_pay_background"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="17dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
-                        android:textStyle="bold"
                         android:text="무제한 "
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="구독권"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:textColor="#f5352e"
                         android:includeFontPadding="false"
-                        android:textStyle="bold"
                         android:text="19,900"
-                        />
+                        android:textColor="#f5352e"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#f5352e"
                         android:text="원"
-                        />
+                        android:textColor="#f5352e"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
@@ -129,162 +159,153 @@
                 <LinearLayout
                     android:id="@+id/ll_bone10"
                     android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_height="45dp"
                     android:background="@drawable/sel_pay_background"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="17dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
-                        android:textStyle="bold"
                         android:text="10개 "
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="뼈다귀"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:textColor="#151515"
                         android:includeFontPadding="false"
-                        android:textStyle="bold"
                         android:text="3,300"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="원"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_bone30"
                     android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_height="45dp"
                     android:background="@drawable/sel_pay_background"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="17dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
-                        android:textStyle="bold"
                         android:text="30개 "
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="뼈다귀"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:textColor="#151515"
                         android:includeFontPadding="false"
-                        android:textStyle="bold"
                         android:text="7,700"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="원"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_bone50"
                     android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_height="45dp"
                     android:background="@drawable/sel_pay_background"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="17dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
-                        android:textStyle="bold"
                         android:text="50개 "
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="뼈다귀"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:textColor="#151515"
                         android:includeFontPadding="false"
-                        android:textStyle="bold"
                         android:text="14,300"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="원"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
 
@@ -292,55 +313,52 @@
                 <LinearLayout
                     android:id="@+id/ll_bone100"
                     android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_height="45dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/sel_pay_background"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="17dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
-                        android:textStyle="bold"
                         android:text="100개 "
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="뼈다귀"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:textColor="#151515"
                         android:includeFontPadding="false"
-                        android:textStyle="bold"
                         android:text="22,000"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14dp"
                         android:includeFontPadding="false"
-                        android:textColor="#151515"
                         android:text="원"
-                        />
+                        android:textColor="#151515"
+                        android:textSize="14dp" />
 
                 </LinearLayout>
             </LinearLayout>

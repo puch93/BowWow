@@ -50,6 +50,15 @@
                 android:background="@drawable/sel_tab03"/>
 
             <ImageView
+                android:id="@+id/btn_dictionary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/sel_tab04"/>
+
+
+            <ImageView
                 android:id="@+id/btn_more"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

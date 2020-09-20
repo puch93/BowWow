@@ -53,9 +53,11 @@ import java.util.List;
 
 import kr.core.bowwow.R;
 import kr.core.bowwow.activity.DogInfoAct;
+import kr.core.bowwow.activity.DogInfoEditAct;
 import kr.core.bowwow.activity.MainActivity;
 import kr.core.bowwow.activity.MydogProfAct;
 import kr.core.bowwow.adapter.DogstatsAdapter;
+import kr.core.bowwow.adapter.ImagePagerAdapter;
 import kr.core.bowwow.app;
 import kr.core.bowwow.customWidget.CustomScrollView;
 import kr.core.bowwow.databinding.FragMydogBinding;
@@ -66,6 +68,7 @@ import kr.core.bowwow.network.MultipartUtility;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
+import kr.core.bowwow.utils.StringUtil;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -79,6 +82,8 @@ public class Mydog extends Fragment implements View.OnClickListener {
     ArrayList<DogstatsItem> list = new ArrayList<>();
     DogstatsAdapter adapter;
 
+    ArrayList<String> list_image = new ArrayList<>();
+    ImagePagerAdapter adapter_image;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,9 +95,6 @@ public class Mydog extends Fragment implements View.OnClickListener {
 
         if (getActivity() != null) {
                 if (!MyUtil.isNull(app.myDogKname)) {
-                    Glide.with(getActivity())
-                            .load(app.myDogImg)
-                            .into(binding.ivPimg);
 
                     binding.tvEname.setText(app.myDogKname);
 //                    binding.tvKname.setText(app.myDogKname);
@@ -175,8 +177,18 @@ public class Mydog extends Fragment implements View.OnClickListener {
 //                        dInfo.getString("d_regdate");
 //                        dInfo.getString("d_editdate");
 
+                            app.myDogImgArray = new ArrayList<>();
+                            for (int i = 1; i < 6; i++) {
+                                if(dInfo.has("d_pimg" + i)) {
+                                    if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
+                                        app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                        Log.i(StringUtil.TAG, "data [" + i + "]: " + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                    }
+                                }
+                            }
 
-                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg");
+
+                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg2");
                             app.myDogBreed = dInfo.getString("d_breed");
                             app.myDogGender = dInfo.getString("d_gender");
                             app.myDogBirth = dInfo.getString("d_birth");
@@ -213,9 +225,17 @@ public class Mydog extends Fragment implements View.OnClickListener {
 
 
                             if (getActivity() != null) {
-                                Glide.with(getActivity())
-                                        .load(app.myDogImg)
-                                        .into(binding.ivPimg);
+//                                Glide.with(getActivity())
+//                                        .load(app.myDogImg)
+//                                        .into(binding.ivPimg);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adapter_image = new ImagePagerAdapter(getActivity().getSupportFragmentManager(), app.myDogImgArray);
+                                        Log.i(StringUtil.TAG, "adapter_image: " + app.myDogImgArray);
+                                        binding.viewPager.setAdapter(adapter_image);
+                                    }
+                                });
 
 
                                 binding.tvEname.setText(app.myDogKname);
@@ -418,9 +438,6 @@ public class Mydog extends Fragment implements View.OnClickListener {
         bInfo.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
         bInfo.addParams("MEMCODE", UserPref.getIdx(getActivity()));
         bInfo.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
-//        binding.tvBreed.getText().toString()  견종 text
-//        bInfo.addParams("_NAME","푸들");
-//        bInfo.addParams("_NAME","닥스훈트");
         bInfo.addParams("_NAME",app.myDogBreed);
         bInfo.execute(true,true);
     }
@@ -692,20 +709,21 @@ public class Mydog extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.mydog_modify:
-                startActivity(new Intent(getActivity(), MydogProfAct.class));
+            case R.id.btn_regphoto:
+                startActivity(new Intent(getActivity(), DogInfoEditAct.class));
 //                Toast.makeText(getContext(), "프로필수정", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_movetop:
                 binding.nscArea.scrollTo(0,0);
                 break;
-            case R.id.btn_regphoto:
-                if (isReqPermission()){
-                    reqPermission();
-                }else {
-                    showRegphoto();
-                }
+
+//                if (isReqPermission()){
+//                    reqPermission();
+//                }else {
+//                    showRegphoto();
+//                }
 //                Toast.makeText(getContext(), "사진등록", Toast.LENGTH_SHORT).show();
-                break;
+//                break;
             case R.id.btn_m1:
                 binding.nscArea.smoothScrollTo(0,(int)binding.rcvStatsList.getChildAt(1).getY());
                 break;

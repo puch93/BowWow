@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_pimg"
+            android:layout_width="match_parent"
+            android:layout_height="403dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:background="@drawable/pettranslate_bg_main_photoarea_200117" />
+
+    </LinearLayout>
+</layout>

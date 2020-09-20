@@ -54,6 +54,7 @@ import kr.core.bowwow.dto.ChatItem;
 import kr.core.bowwow.dto.pref.UserPref;
 import kr.core.bowwow.fragments.Chatting;
 import kr.core.bowwow.fragments.Command;
+import kr.core.bowwow.fragments.Dictionary;
 import kr.core.bowwow.fragments.More;
 import kr.core.bowwow.fragments.Mydog;
 import kr.core.bowwow.network.HttpResult;
@@ -62,6 +63,7 @@ import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.service.ForegroundService;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
+import kr.core.bowwow.utils.StringUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnSignalsDetectedListener {
 
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding.btnChat.setOnClickListener(this);
         binding.btnCommand.setOnClickListener(this);
         binding.btnMore.setOnClickListener(this);
+        binding.btnDictionary.setOnClickListener(this);
 
         String detect = getIntent().getStringExtra("detect");
 
@@ -220,7 +223,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             JSONObject dInfo = jo.getJSONObject("DOGCODE");
 
-                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg");
+                            app.myDogImgArray = new ArrayList<>();
+                            for (int i = 1; i < 6; i++) {
+                                if(dInfo.has("d_pimg" + i)) {
+                                    if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
+                                        app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                    }
+                                }
+                            }
+
+                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg2");
                             app.myDogBreed = dInfo.getString("d_breed");
                             app.myDogGender = dInfo.getString("d_gender");
                             app.myDogBirth = dInfo.getString("d_birth");
@@ -448,10 +460,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 3:
                 currPos = 3;
+                frag = new Dictionary();
+                binding.btnMydog.setSelected(false);
+                binding.btnChat.setSelected(false);
+                binding.btnCommand.setSelected(false);
+                binding.btnMore.setSelected(false);
+                binding.btnDictionary.setSelected(true);
+                break;
+            case 4:
+                currPos = 4;
                 frag = new More();
                 binding.btnMydog.setSelected(false);
                 binding.btnChat.setSelected(false);
                 binding.btnCommand.setSelected(false);
+                binding.btnDictionary.setSelected(false);
                 binding.btnMore.setSelected(true);
                 break;
         }
@@ -473,8 +495,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_command:
                 setFragment(2);
                 break;
-            case R.id.btn_more:
+            case R.id.btn_dictionary:
                 setFragment(3);
+                break;
+            case R.id.btn_more:
+                setFragment(4);
                 break;
         }
     }

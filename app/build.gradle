@@ -73,7 +73,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
     implementation 'com.github.fracpete:musicg:1.4.2.2'
-
+    implementation 'com.google.android.material:material:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

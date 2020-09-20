@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.billingclient.api.Purchase;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +52,10 @@ public class DlgPayment extends Activity implements View.OnClickListener {
 
         setClickListener();
         setBilling();
+
+        Glide.with(this)
+                .load(R.raw.order_gif)
+                .into(binding.gifRight);
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.DogInfoEditAct;
 import kr.core.bowwow.activity.MydogProfAct;
 import kr.core.bowwow.adapter.CommandListAdapter;
 import kr.core.bowwow.app;
@@ -35,6 +36,7 @@ import kr.core.bowwow.dto.pref.UserPref;
 import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
+import kr.core.bowwow.utils.AllOfDecoration;
 import kr.core.bowwow.utils.LayoutWebView;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
@@ -87,13 +89,15 @@ public class Command extends Fragment {
             }
         });
 
+        binding.rcvCmdlist.addItemDecoration(new AllOfDecoration(act, "command"));
+
         setCommandList();
         setBanner();
 
         binding.mydogModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MydogProfAct.class));
+                startActivity(new Intent(getActivity(), DogInfoEditAct.class));
             }
         });
 

@@ -49,6 +49,7 @@ public class Dictionary extends Fragment implements View.OnClickListener {
     Activity act;
 
     ArrayList<DictionaryData> list = new ArrayList<>();
+    DictionaryAdapter adapter;
 
     @Nullable
     @Override
@@ -56,23 +57,79 @@ public class Dictionary extends Fragment implements View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_dictionary, container, false);
         act = getActivity();
 
+        binding.btnSearch.setOnClickListener(this);
+        binding.btnSerchclose.setOnClickListener(this);
+
         binding.title.setTypeface(app.tf_bmjua);
 
         String[] arrays = getResources().getStringArray(R.array.breed_list);
         for (int i = 1; i < arrays.length; i++) {
-            list.add(new DictionaryData(null, arrays[i]));
+            list.add(new DictionaryData(MyUtil.getDogImage(arrays[i]), arrays[i]));
         }
+
+        adapter = new DictionaryAdapter(act, list);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(act, 2));
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setItemViewCacheSize(20);
-        binding.recyclerView.setAdapter(new DictionaryAdapter(act, list));
+        binding.recyclerView.setAdapter(adapter);
 
         return binding.getRoot();
+    }
+
+    private ArrayList<DictionaryData> getSearchList(String keyword) {
+        ArrayList<DictionaryData> searchList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).getName().contains(keyword)) {
+                searchList.add(list.get(i));
+            }
+        }
+
+        return searchList;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_search:
+                if (binding.searchArea.getVisibility() != View.VISIBLE) {
+                    binding.searchArea.setVisibility(View.VISIBLE);
+                    binding.title.setVisibility(View.GONE);
+//                    binding.llDetectmsgArea.setVisibility(View.GONE);
+                }else{
+                    // 검색
+                    if (binding.etSearch.length() == 0){
+                        Toast.makeText(act, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Toast.makeText(act, binding.etSearch.getText()+" 검색", Toast.LENGTH_SHORT).show();
+
+                    if(getSearchList(binding.etSearch.getText().toString()).size() == 0) {
+                        Toast.makeText(act, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        act.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.setList(getSearchList(binding.etSearch.getText().toString()));
+                            }
+                        });
+                    }
+                }
+                break;
+
+            case R.id.btn_serchclose:
+                binding.searchArea.setVisibility(View.GONE);
+                binding.title.setVisibility(View.VISIBLE);
+                binding.etSearch.setText(null);
+
+                act.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.setList(list);
+                    }
+                });
+                break;
         }
     }
 }

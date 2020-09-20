@@ -35,23 +35,23 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:text="반려견 정보입력"
                 android:textColor="#151515"
                 android:textSize="16dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="반려견 정보입력" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/btn_back_02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/btn_book_view"
                 android:gravity="center"
                 android:text="다른견종보기"
-                android:layout_marginRight="16dp"
                 android:textColor="#fefefe"
                 android:textSize="13dp"
                 android:textStyle="bold"
@@ -66,7 +66,7 @@
             android:background="#f7f9fa" />
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+            android:id="@+id/nsc_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"
@@ -81,13 +81,13 @@
                 <ImageView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="360dp"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#dddddd"/>
+                    android:background="#dddddd" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

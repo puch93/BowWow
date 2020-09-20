@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.DogInfoEditAct;
 import kr.core.bowwow.activity.MydogProfAct;
 import kr.core.bowwow.activity.ServiceCenterAct;
 import kr.core.bowwow.activity.TermsAct;
@@ -59,6 +60,7 @@ public class More extends Fragment implements View.OnClickListener {
         act = getActivity();
 
         binding.title.setTypeface(app.tf_bmjua);
+        binding.text.setTypeface(app.tf_bmjua);
 
         setClickListener();
 //        setBanner();
@@ -72,10 +74,16 @@ public class More extends Fragment implements View.OnClickListener {
         binding.tvBreed.setText(app.myDogBreed);
 
         if (SettingPref.isPushReceive(getActivity())) {
-            binding.tvPushstate.setText("켜짐");
+            binding.swChat.setChecked(true);
         } else {
-            binding.tvPushstate.setText("꺼짐");
+            binding.swChat.setChecked(false);
         }
+        binding.swChat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SettingPref.setPushReceive(act, isChecked);
+            }
+        });
 
         setBanner();
 
@@ -250,20 +258,10 @@ public class More extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mydog_modify:
-                startActivity(new Intent(getActivity(), MydogProfAct.class));
+                startActivity(new Intent(getActivity(), DogInfoEditAct.class));
                 break;
             case R.id.btn_payment:
                 startActivity(new Intent(getActivity(), DlgPayment.class));
-                break;
-            case R.id.btn_pushstate:
-                SettingPref.setPushReceive(getActivity(), !SettingPref.isPushReceive(getActivity()));
-                if (SettingPref.isPushReceive(getActivity())) {
-                    Toast.makeText(getActivity(), "푸시알림 켜짐", Toast.LENGTH_SHORT).show();
-                    binding.tvPushstate.setText("켜짐");
-                } else {
-                    Toast.makeText(getActivity(), "푸시알림 꺼짐", Toast.LENGTH_SHORT).show();
-                    binding.tvPushstate.setText("꺼짐");
-                }
                 break;
             case R.id.btn_scenter:
                 startActivity(new Intent(getActivity(), ServiceCenterAct.class));

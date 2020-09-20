@@ -122,13 +122,13 @@ public class MyUtil {
             //실제
 //            UserPref.setDeviceId(ctx,newId);
             //테스트
-            UserPref.setDeviceId(ctx,"355325072243259");
+            UserPref.setDeviceId(ctx,"355325072243220");
         }
 
         // 실제
 //        return newId;
         // 테스트
-        return "355325072243259";
+        return "355325072243220";
 
     }
 
@@ -261,6 +261,87 @@ public class MyUtil {
                 break;
         }
         return result;
+    }
+
+    public static int getDogImage(String name) {
+        switch (name) {
+            case "요크셔테리어":
+                return R.drawable.d01;
+            case "비글":
+                return R.drawable.d02;
+            case "닥스훈트":
+                return R.drawable.d03;
+            case "푸들":
+                return R.drawable.d04;
+            case "시추":
+                return R.drawable.d05;
+            case "슈나우저":
+                return R.drawable.d06;
+            case "치와와":
+                return R.drawable.d07;
+            case "포메라니안":
+                return R.drawable.d08;
+            case "셔틀랜드 쉽독":
+               return  R.drawable.d09;
+            case "보스턴테리어":
+                return R.drawable.d10;
+            case "말티즈":
+                return R.drawable.d11;
+            case "파피용":
+                return R.drawable.d12;
+            case "비숑 프리제":
+                return R.drawable.d13;
+            case "미니어처 핀셔(미니핀)":
+                return R.drawable.d14;
+            case "페키니즈":
+                return R.drawable.d15;
+            case "불독":
+                return R.drawable.d16;
+            case "잉글리쉬 코커 스패니얼":
+                return R.drawable.d17;
+            case "아메리칸 코커 스패니얼":
+                return R.drawable.d18;
+            case "웰시코기 펨브로크":
+                return R.drawable.d19;
+            case "웰시코기 카디건":
+                return R.drawable.d20;
+            case "보더콜리":
+                return R.drawable.d21;
+            case "샤페이":
+                return R.drawable.d22;
+            case "사모예드":
+                return R.drawable.d23;
+            case "재패니즈 스피츠":
+                return R.drawable.d24;
+            case "진돗개":
+                return R.drawable.d25;
+            case "래브라도 리트리버":
+                return R.drawable.d26;
+            case "저먼 세퍼드 도그":
+                return R.drawable.d27;
+            case "골든 리트리버":
+                return R.drawable.d28;
+            case "로트와일러":
+                return R.drawable.d29;
+            case "그레이트 데인":
+                return R.drawable.d30;
+            case "시베리안 허스키":
+                return R.drawable.d31;
+            case "러프 콜리":
+                return R.drawable.d32;
+            case "스무드 콜리":
+                return R.drawable.d33;
+            case "알래스칸 맬러뮤트":
+                return R.drawable.d34;
+            case "달마시안":
+                return R.drawable.d35;
+            case "그레이트 피레니즈":
+                return R.drawable.d36;
+            case "올드 잉글리쉬 쉽독":
+                return R.drawable.d37;
+            default:
+                return 0;
+        }
     }
 
     public static boolean isAppOnForeground(Context context){

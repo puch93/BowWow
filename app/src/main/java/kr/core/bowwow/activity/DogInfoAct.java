@@ -430,7 +430,7 @@ public class DogInfoAct extends Activity implements View.OnClickListener {
         }
     }
 
-    private void regDogInfo(final File pimg) {
+    private void regDogInfo() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -448,7 +448,11 @@ public class DogInfoAct extends Activity implements View.OnClickListener {
                     mu.addFormField("d_breed", binding.spnBreed.getSelectedItem().toString());
                     mu.addFormField("d_gender", binding.spnGender.getSelectedItem().toString());
                     mu.addFormField("d_birth", binding.tvBirth.getText().toString());
-                    mu.addFilePart("d_pimg", pimg);
+
+                    for (int i = 1; i < image_list.size(); i++) {
+                        File img = new File(image_list.get(i));
+                        mu.addFilePart("d_pimg" + i, img);
+                    }
 
                     Log.d(MyUtil.TAG, "input idx: " + UserPref.getIdx(DogInfoAct.this));
 
@@ -540,18 +544,12 @@ public class DogInfoAct extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                if (MyUtil.isNull(mImgFilePath)) {
-                    Toast.makeText(this, "반려견 이미지를 선택해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                File img = new File(mImgFilePath);
-                if (img.length() == 0) {
+                if(image_list.size() == 0) {
                     Toast.makeText(this, "반려견 이미지를 확인해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                regDogInfo(img);
+                regDogInfo();
 
                 break;
         }
