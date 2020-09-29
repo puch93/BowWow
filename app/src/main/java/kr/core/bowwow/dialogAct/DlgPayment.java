@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.BaseAct;
 import kr.core.bowwow.app;
 import kr.core.bowwow.billing.BillingManager;
 import kr.core.bowwow.databinding.DlgPaymentBinding;
@@ -31,11 +32,11 @@ import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
 
-public class DlgPayment extends Activity implements View.OnClickListener {
+public class DlgPayment extends BaseAct implements View.OnClickListener {
 
     DlgPaymentBinding binding;
 
-    String itemname,price;
+    String itemname, price;
 
     BillingManager billingManager;
 
@@ -58,14 +59,69 @@ public class DlgPayment extends Activity implements View.OnClickListener {
                 .into(binding.gifRight);
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                //TODO 제거해야함
+//                sendPurchaseResultTest();
                 finish();
             }
         });
+
     }
 
-    private void setClickListener(){
+
+    private void sendPurchaseResultTest() {
+        ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+//                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
+                Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
+                if (resultData.getResult() != null) {
+
+                    try {
+
+                        JSONObject jo = new JSONObject(resultData.getResult());
+                        Toast.makeText(DlgPayment.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+
+                        } else {
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 데이터 형태", Toast.LENGTH_SHORT).show();
+                    }
+
+                    finish();
+
+                } else {
+                    Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 값이 없음", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        pResult.addParams("CONNECTCODE", "APP");
+        pResult.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        pResult.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
+        pResult.addParams("MEMCODE", UserPref.getIdx(this));
+        pResult.addParams("dbControl", "setPointINAPPPayment");
+        pResult.addParams("m_uniq", UserPref.getDeviceId(this));
+        pResult.addParams("p_market", "PlayStore");
+        pResult.addParams("p_class", "point");
+        pResult.addParams("p_point", "10");
+        pResult.addParams("price", "3300");
+        pResult.addParams("p_purchase_item_name", "bone10");
+        pResult.addParams("p_purchasetime", String.valueOf(System.currentTimeMillis()));
+        pResult.addParams("p_orderid", "1234");
+        pResult.addParams("p_token", "1234");
+        pResult.addParams("productId", "1234");
+        pResult.addParams("p_pay_data_info", "1234");
+        pResult.execute(true, true);
+    }
+
+    private void setClickListener() {
         binding.llSubitem.setOnClickListener(this);
         binding.llBone10.setOnClickListener(this);
         binding.llBone30.setOnClickListener(this);
@@ -79,7 +135,7 @@ public class DlgPayment extends Activity implements View.OnClickListener {
         binding.llBone100.setTag(4);
     }
 
-    private void setBilling(){
+    private void setBilling() {
         billingManager = new BillingManager(this, new BillingManager.AfterBilling() {
             @Override
             public void sendResult(Purchase purchase, boolean isSubscribe) {
@@ -98,12 +154,12 @@ public class DlgPayment extends Activity implements View.OnClickListener {
 //                getOriginalJson: {"orderId":"GPA.3303-9864-0457-90862","packageName":"kr.core.bowwow","productId":"bone10","purchaseTime":1577667304962,"purchaseState":0,"purchaseToken":"nchdokkhbcmlpepekmfmgnao.AO-J1OwWkXZ234qt8D3HN78jdTk8JE1Un5EgcJ8To6Zno6sTJg1VqlBPNGHTPfCEvhC0s0_UYmT1HRHOVJF5LhIpE-req9jr2HG-6uVpoLTvEHVk0oaDq_M","acknowledged":false}
 
                 // 서버로 값 전송(결제 완료)
-                Log.d(MyUtil.TAG, "getSku: "+purchase.getSku());
-                Log.d(MyUtil.TAG, "getPurchaseToken: "+purchase.getPurchaseToken());
-                Log.d(MyUtil.TAG, "getOrderId: "+purchase.getOrderId());
-                Log.d(MyUtil.TAG, "getPurchaseTime: "+purchase.getPurchaseTime());
-                Log.d(MyUtil.TAG, "getOriginalJson: "+purchase.getOriginalJson());
-                sendPurchaseResult(purchase,isSubscribe);
+                Log.d(MyUtil.TAG, "getSku: " + purchase.getSku());
+                Log.d(MyUtil.TAG, "getPurchaseToken: " + purchase.getPurchaseToken());
+                Log.d(MyUtil.TAG, "getOrderId: " + purchase.getOrderId());
+                Log.d(MyUtil.TAG, "getPurchaseTime: " + purchase.getPurchaseTime());
+                Log.d(MyUtil.TAG, "getOriginalJson: " + purchase.getOriginalJson());
+                sendPurchaseResult(purchase, isSubscribe);
             }
 
             @Override
@@ -113,50 +169,50 @@ public class DlgPayment extends Activity implements View.OnClickListener {
         });
     }
 
-    private void sendPurchaseResult(Purchase p, final boolean isSubscribe){
+    private void sendPurchaseResult(Purchase p, final boolean isSubscribe) {
         ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
 //                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
-                Log.d(MyUtil.TAG, "sendPurchaseResult: "+resultData.getResult());
-                if (resultData.getResult() != null){
+                Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
+                if (resultData.getResult() != null) {
 
                     try {
 
                         JSONObject jo = new JSONObject(resultData.getResult());
                         Toast.makeText(DlgPayment.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
-                        if (jo.getString("result").equalsIgnoreCase("Y")){
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
                             if (isSubscribe) {
                                 UserPref.setSubscribeState(DlgPayment.this, "Y");
                             }
-                        }else{
+                        } else {
 
                         }
 
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 데이터 형태", Toast.LENGTH_SHORT).show();
                     }
 
                     finish();
 
-                }else{
+                } else {
                     Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 값이 없음", Toast.LENGTH_SHORT).show();
                 }
             }
         };
 
-        pResult.addParams("CONNECTCODE","APP");
-        pResult.addParams("siteUrl",NetUrls.MEDIADOMAIN);
+        pResult.addParams("CONNECTCODE", "APP");
+        pResult.addParams("siteUrl", NetUrls.MEDIADOMAIN);
         pResult.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
         pResult.addParams("MEMCODE", UserPref.getIdx(this));
-        pResult.addParams("dbControl","setPointINAPPPayment");
+        pResult.addParams("dbControl", "setPointINAPPPayment");
         pResult.addParams("m_uniq", UserPref.getDeviceId(this));
 //        pResult.addParams("MEMCODE", UserPref.getIdx(this));
-        pResult.addParams("p_market","PlayStore");
+        pResult.addParams("p_market", "PlayStore");
 
-        if (isSubscribe){
-            pResult.addParams("p_class","month");
+        if (isSubscribe) {
+            pResult.addParams("p_class", "month");
             Date d = new Date(p.getPurchaseTime());
             Calendar c = Calendar.getInstance();
             c.setTime(d);
@@ -166,13 +222,13 @@ public class DlgPayment extends Activity implements View.OnClickListener {
 //            Log.d(MyUtil.TAG, "plus: "+sdf.format(c.getTime()));
 
 //            pResult.addParams("expire_datetime","");
-            pResult.addParams("expire_datetime",sdf.format(c.getTime()));
+            pResult.addParams("expire_datetime", sdf.format(c.getTime()));
 
-        }else{
-            pResult.addParams("p_class","point");
+        } else {
+            pResult.addParams("p_class", "point");
 
             String point = "0";
-            switch (itemname){
+            switch (itemname) {
                 case "bone10":
                     point = "10";
                     break;
@@ -186,20 +242,20 @@ public class DlgPayment extends Activity implements View.OnClickListener {
                     point = "100";
                     break;
             }
-            pResult.addParams("p_point",point);
+            pResult.addParams("p_point", point);
         }
-        pResult.addParams("price",price);
-        pResult.addParams("p_purchase_item_name",p.getSku());
-        pResult.addParams("p_purchasetime",String.valueOf(p.getPurchaseTime()));
-        pResult.addParams("p_orderid",p.getOrderId());
-        pResult.addParams("p_token",p.getPurchaseToken());
-        pResult.addParams("productId",p.getSku());
-        pResult.addParams("p_pay_data_info",p.getOriginalJson());
-        pResult.execute(true,true);
+        pResult.addParams("price", price);
+        pResult.addParams("p_purchase_item_name", p.getSku());
+        pResult.addParams("p_purchasetime", String.valueOf(p.getPurchaseTime()));
+        pResult.addParams("p_orderid", p.getOrderId());
+        pResult.addParams("p_token", p.getPurchaseToken());
+        pResult.addParams("productId", p.getSku());
+        pResult.addParams("p_pay_data_info", p.getOriginalJson());
+        pResult.execute(true, true);
     }
 
-    private void setItemState(int item){
-        switch (item){
+    private void setItemState(int item) {
+        switch (item) {
             case 0:
                 itemname = BillingManager.SUBITEM;
                 price = "19900";
@@ -225,22 +281,22 @@ public class DlgPayment extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_subitem:
             case R.id.ll_bone10:
             case R.id.ll_bone30:
             case R.id.ll_bone50:
             case R.id.ll_bone100:
                 setItemState((int) v.getTag());
-                if (MyUtil.isNull(itemname)){
+                if (MyUtil.isNull(itemname)) {
                     Toast.makeText(this, "결제 항목을 선택해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.d(MyUtil.TAG, "itemname: "+itemname);
+                Log.d(MyUtil.TAG, "itemname: " + itemname);
 
-                if (itemname.equalsIgnoreCase(BillingManager.SUBITEM)){
+                if (itemname.equalsIgnoreCase(BillingManager.SUBITEM)) {
                     billingManager.purchase(itemname, true);
-                }else{
+                } else {
                     billingManager.purchase(itemname, false);
                 }
                 break;

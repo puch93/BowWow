@@ -63,15 +63,7 @@ public class More extends Fragment implements View.OnClickListener {
         binding.text.setTypeface(app.tf_bmjua);
 
         setClickListener();
-//        setBanner();
 
-        Glide.with(getActivity())
-                .load(app.myDogImg)
-                .transform(new CircleCrop())
-                .into(binding.ivProfimg);
-
-        binding.tvKname.setText(app.myDogKname);
-        binding.tvBreed.setText(app.myDogBreed);
 
         if (SettingPref.isPushReceive(getActivity())) {
             binding.swChat.setChecked(true);
@@ -108,6 +100,19 @@ public class More extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         getMypoint();
+
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(getActivity())
+                        .load(app.myDogImg)
+                        .transform(new CircleCrop())
+                        .into(binding.ivProfimg);
+
+                binding.tvKname.setText(app.myDogKname);
+                binding.tvBreed.setText(app.myDogBreed);
+            }
+        });
     }
 
     private void getMypoint() {
@@ -126,11 +131,14 @@ public class More extends Fragment implements View.OnClickListener {
                             if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
                                 if (MyUtil.isNull(jo.getString("point"))) {
                                     binding.tvBonecnt.setText("0");
+                                    binding.boneCount.setText("0");
                                 } else {
                                     binding.tvBonecnt.setText(jo.getString("point"));
+                                    binding.boneCount.setText(jo.getString("point"));
                                 }
                             } else {
-                                binding.tvBonecnt.setText("구독권 이용중");
+                                binding.boneCount.setText("구독권 이용중");
+                                binding.gae.setVisibility(View.GONE);
                             }
                         } else {
                             Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();

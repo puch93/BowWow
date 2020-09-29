@@ -1,6 +1,7 @@
 package kr.core.bowwow.adapter;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -43,6 +44,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int DOGMSG = 2;
 
     Activity act;
+
+    public void setList(ArrayList<ChatItem> list) {
+        this.list = list;
+        notifyDataSetChanged();
+    }
+
     ArrayList<ChatItem> list;
 
     int prePos = -1;
@@ -90,6 +97,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         int viewType = getItemViewType(pos);
 
         if (viewType == MYMSG) {
+            mVisualizerView.setColor(Color.rgb(255, 255, 255));
+
             final MymsgHolder myHolder = (MymsgHolder) holder;
 
             myHolder.tv_mymsg.setText(list.get(pos).getT_msg());
@@ -135,6 +144,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
         } else if (viewType == DOGMSG) {
+            mVisualizerView.setColor(Color.rgb(244, 76, 70));
             final DogmsgHolder dogHolder = (DogmsgHolder) holder;
 
             dogHolder.tv_dogname.setText(app.myDogKname);

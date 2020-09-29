@@ -51,7 +51,7 @@ public class Command extends Fragment {
     public boolean isScroll = false;
     public int page = 1;
     int lastPage = 0;
-    Activity act;
+    public static Activity act;
 
     @Nullable
     @Override
@@ -61,7 +61,12 @@ public class Command extends Fragment {
 
         mManager = new GridLayoutManager(getContext(), 3);
         binding.rcvCmdlist.setLayoutManager(mManager);
-        adapter = new CommandListAdapter(getActivity(), list);
+        adapter = new CommandListAdapter(getActivity(), list, new CommandListAdapter.Clicked() {
+            @Override
+            public void clicked() {
+                getMyPoint();
+            }
+        });
         binding.rcvCmdlist.setAdapter(adapter);
 
         binding.title.setTypeface(app.tf_bmjua);
@@ -102,6 +107,66 @@ public class Command extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMyPoint();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK) {
+            getMyPoint();
+        }
+    }
+
+    public void getMyPoint() {
+        ReqBasic myPoint = new ReqBasic(getActivity(), NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getMypoint: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 등록하였습니다.","url":"", "point":"11"}
+                if (resultData.getResult() != null) {
+
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.has("point")) {
+
+                            if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
+                                if (MyUtil.isNull(jo.getString("point"))) {
+                                    binding.boneCount.setText("0");
+                                } else {
+                                    binding.boneCount.setText(jo.getString("point"));
+                                }
+                            } else {
+                                binding.boneCount.setText("구독권 이용중");
+                                binding.gae.setVisibility(View.GONE);
+                            }
+                        } else {
+                            binding.boneCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        myPoint.addParams("CONNECTCODE", "APP");
+        myPoint.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        myPoint.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
+        myPoint.addParams("dbControl", "getMemberPoint");
+        myPoint.addParams("MEMCODE", UserPref.getIdx(getActivity()));
+        myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
+        myPoint.execute(true, false);
+
     }
 
     private void setCommandList() {

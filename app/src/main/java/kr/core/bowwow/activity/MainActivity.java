@@ -65,7 +65,7 @@ import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnSignalsDetectedListener {
+public class MainActivity extends BaseAct implements View.OnClickListener, OnSignalsDetectedListener {
 
     ActivityMainBinding binding;
 
@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         mHandler.sendEmptyMessage(0);
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainApp = this;
 
-        Log.d(MyUtil.TAG, "dir: "+ Environment.getDataDirectory());
+        Log.d(MyUtil.TAG, "dir: " + Environment.getDataDirectory());
 
 //        if (isReqPermission()){
 //            reqPermission();
@@ -127,10 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (MyUtil.isNull(detect)) {
             setFragment(0);
 
-            if (isReqPermission()){
+            if (isReqPermission()) {
                 Toast.makeText(mainApp, "마이크 권한을 허용해주세요.", Toast.LENGTH_SHORT).show();
                 reqPermission();
-            }else{
+            } else {
 //                startService();
             }
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                regtWhiteList();
 //            }
 
-        }else if (detect.equalsIgnoreCase("y")){
+        } else if (detect.equalsIgnoreCase("y")) {
             if (currPos != 1) {
                 setFragment(1);
             }
@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-        if (currPos == 1){
+        if (currPos == 1) {
             setFragment(0);
-        }else{
+        } else {
             if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
                 finishAffinity();
             } else {
@@ -173,24 +173,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean isWhitelist(){
-        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+    private boolean isWhitelist() {
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         boolean isWhiteListing = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             isWhiteListing = pm.isIgnoringBatteryOptimizations(getPackageName());
         }
         return isWhiteListing;
     }
 
-    private void regtWhiteList(){
+    private void regtWhiteList() {
         AlertDialog.Builder setdialog = new AlertDialog.Builder(MainActivity.this);
         setdialog.setTitle("추가 설정이 필요합니다.")
                 .setMessage("어플을 문제없이 사용하기 위해서는 해당 어플을 \"배터리 사용량 최적화\" 목록에서 \"제외\"해야 합니다. 설정하시겠습니까?")
                 .setPositiveButton("네", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent  = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                        intent.setData(Uri.parse("package:"+ getPackageName()));
+                        Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
                         startActivity(intent);
 //                        startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
                     }
@@ -205,40 +205,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
-    private void getDogInfo(){
+    private void getDogInfo() {
         // 반려견 정보 가져오기 및 세팅
-        ReqBasic dogInfo = new ReqBasic(this,NetUrls.DOMAIN) {
+        ReqBasic dogInfo = new ReqBasic(this, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
-                Log.d(MyUtil.TAG, "getDogInfo: "+resultData.getResult());
+                Log.d(MyUtil.TAG, "getDogInfo: " + resultData.getResult());
 //                {"result":"Y","message":"성공적으로 수정하였습니다.","url":"","DOGCODE":"{"d_idx":"359","d_site":"1","d_user_idx":"0","d_pimg":"\/UPLOAD\/DOG_INFO\/30726684_eKARpZkE_profimg1217170040272885618.jpg","d_kname":"\uba4d\uba4d","d_ename":"mm","d_breed":"\ubd88\ub3c5","d_gender":"\ub0a8","d_birth":"2019.11.01","d_regdate":"2019-12-17 17:00:53","d_editdate":"0000-00-00 00:00:00"}"}
 
-                if (resultData.getResult() != null){
+                if (resultData.getResult() != null) {
                     try {
                         JSONObject jo = new JSONObject(resultData.getResult());
 
-                        if (jo.getString("result").equalsIgnoreCase("Y")){
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
 //                        Log.d(MyUtil.TAG, "DOGCODE: "+jo.getJSONObject("DOGCODE"));
-                            Log.d(MyUtil.TAG, "DOGCODE: "+jo.getString("DOGCODE"));
+                            Log.d(MyUtil.TAG, "DOGCODE: " + jo.getString("DOGCODE"));
 
                             JSONObject dInfo = jo.getJSONObject("DOGCODE");
 
                             app.myDogImgArray = new ArrayList<>();
                             for (int i = 1; i < 6; i++) {
-                                if(dInfo.has("d_pimg" + i)) {
-                                    if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
-                                        app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                if (i == 1) {
+                                    if (dInfo.has("d_pimg")) {
+                                        if (!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg"))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg"));
+                                        }
+                                    }
+                                } else {
+                                    if (dInfo.has("d_pimg" + i)) {
+                                        if (!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                        }
                                     }
                                 }
                             }
 
-                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg2");
+                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg");
                             app.myDogBreed = dInfo.getString("d_breed");
                             app.myDogGender = dInfo.getString("d_gender");
                             app.myDogBirth = dInfo.getString("d_birth");
                             app.myDogKname = dInfo.getString("d_kname");
 
-                        }else{
+                        } else {
                             Toast.makeText(MainActivity.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
@@ -246,48 +254,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
                     }
 
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
                 }
 
             }
         };
 
-        dogInfo.addParams("CONNECTCODE","APP");
-        dogInfo.addParams("siteUrl",NetUrls.MEDIADOMAIN);
-        dogInfo.addParams("dbControl","setDogInfo");
+        dogInfo.addParams("CONNECTCODE", "APP");
+        dogInfo.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        dogInfo.addParams("dbControl", "setDogInfo");
         dogInfo.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
         dogInfo.addParams("MEMCODE", UserPref.getIdx(this));
         dogInfo.addParams("m_uniq", UserPref.getDeviceId(this));
-        dogInfo.execute(true,true);
-
+        dogInfo.execute(true, true);
     }
 
-    private void getTalkList(){
+    private void getTalkList() {
         ReqBasic talkList = new ReqBasic(this, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, final HttpResult resultData) {
-                Log.d(MyUtil.TAG, "getTalkList: "+resultData.getResult());
+                Log.d(MyUtil.TAG, "getTalkList: " + resultData.getResult());
 
-                if (resultData.getResult() != null){
+                if (resultData.getResult() != null) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                    try {
-                        JSONObject jo = new JSONObject(resultData.getResult());
+                            try {
+                                JSONObject jo = new JSONObject(resultData.getResult());
 
-                        jo.getString("total");
-                        jo.getString("result");
-                        jo.getString("message");
-                        jo.getString("data");
+                                jo.getString("total");
+                                jo.getString("result");
+                                jo.getString("message");
+                                jo.getString("data");
 
-                        if (!MyUtil.isNull(jo.getString("data"))) {
+                                if (!MyUtil.isNull(jo.getString("data"))) {
 
-                            JSONArray ja = jo.getJSONArray("data");
-                            if (ja.length() > 0) {
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject msgData = ja.getJSONObject(i);
-                                    ChatItem data = new ChatItem();
+                                    JSONArray ja = jo.getJSONArray("data");
+                                    if (ja.length() > 0) {
+                                        for (int i = 0; i < ja.length(); i++) {
+                                            JSONObject msgData = ja.getJSONObject(i);
+                                            ChatItem data = new ChatItem();
 
 //                                msgData.getString("t_idx");
 //                                msgData.getString("t_site");
@@ -299,109 +306,109 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                                msgData.getString("t_editdate");
 //                                msgData.getString("num");
 
-                                    if (db.getLastItem(MainActivity.this) == null) {
+                                            if (db.getLastItem(MainActivity.this) == null) {
 
-                                        data.setT_idx(msgData.getString("t_idx"));
-                                        data.setT_type(msgData.getString("t_type"));
-                                        data.setT_msg(msgData.getString("t_msg"));
-                                        data.setT_sound(NetUrls.MEDIADOMAIN + msgData.getString("t_sound"));
-                                        data.setT_regdate(msgData.getString("t_regdate"));
+                                                data.setT_idx(msgData.getString("t_idx"));
+                                                data.setT_type(msgData.getString("t_type"));
+                                                data.setT_msg(msgData.getString("t_msg"));
+                                                data.setT_sound(NetUrls.MEDIADOMAIN + msgData.getString("t_sound"));
+                                                data.setT_regdate(msgData.getString("t_regdate"));
 
-                                        if (MyUtil.isNull(msgData.getString("t_sound_runtime"))){
-                                            MediaPlayer mp = new MediaPlayer();
-                                            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                            try {
-                                                mp.setDataSource(data.getT_sound());
-                                                mp.prepare();
-                                                data.setDuration(String.valueOf(mp.getDuration()));
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }else{
-                                            data.setDuration(msgData.getString("t_sound_runtime"));
-                                        }
-
-                                        db.chatItemInsert(MainActivity.this, data);
-
-                                    } else {
-                                        if (Integer.parseInt(db.getLastItem(MainActivity.this).getT_idx()) < Integer.parseInt(msgData.getString("t_idx"))) {
-                                            data.setT_idx(msgData.getString("t_idx"));
-                                            data.setT_type(msgData.getString("t_type"));
-                                            data.setT_msg(msgData.getString("t_msg"));
-                                            data.setT_sound(NetUrls.MEDIADOMAIN + msgData.getString("t_sound"));
-                                            data.setT_regdate(msgData.getString("t_regdate"));
-
-                                            if (MyUtil.isNull(msgData.getString("t_sound_runtime"))){
-                                                MediaPlayer mp = new MediaPlayer();
-                                                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                                try {
-                                                    mp.setDataSource(data.getT_sound());
-                                                    mp.prepare();
-                                                    data.setDuration(String.valueOf(mp.getDuration()));
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
+                                                if (MyUtil.isNull(msgData.getString("t_sound_runtime"))) {
+                                                    MediaPlayer mp = new MediaPlayer();
+                                                    mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                                    try {
+                                                        mp.setDataSource(data.getT_sound());
+                                                        mp.prepare();
+                                                        data.setDuration(String.valueOf(mp.getDuration()));
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                } else {
+                                                    data.setDuration(msgData.getString("t_sound_runtime"));
                                                 }
-                                            }else{
-                                                data.setDuration(msgData.getString("t_sound_runtime"));
+
+                                                db.chatItemInsert(MainActivity.this, data);
+
+                                            } else {
+                                                if (Integer.parseInt(db.getLastItem(MainActivity.this).getT_idx()) < Integer.parseInt(msgData.getString("t_idx"))) {
+                                                    data.setT_idx(msgData.getString("t_idx"));
+                                                    data.setT_type(msgData.getString("t_type"));
+                                                    data.setT_msg(msgData.getString("t_msg"));
+                                                    data.setT_sound(NetUrls.MEDIADOMAIN + msgData.getString("t_sound"));
+                                                    data.setT_regdate(msgData.getString("t_regdate"));
+
+                                                    if (MyUtil.isNull(msgData.getString("t_sound_runtime"))) {
+                                                        MediaPlayer mp = new MediaPlayer();
+                                                        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                                        try {
+                                                            mp.setDataSource(data.getT_sound());
+                                                            mp.prepare();
+                                                            data.setDuration(String.valueOf(mp.getDuration()));
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    } else {
+                                                        data.setDuration(msgData.getString("t_sound_runtime"));
+                                                    }
+
+                                                    db.chatItemInsert(MainActivity.this, data);
+                                                }
                                             }
-
-                                            db.chatItemInsert(MainActivity.this, data);
                                         }
-                                    }
-                                }
 
-                                if (app.chatItems.size() > 0) {
-                                    app.chatItems.clear();
-                                }
-                                app.chatItems.addAll(db.getChatList(MainActivity.this));
+                                        if (app.chatItems.size() > 0) {
+                                            app.chatItems.clear();
+                                        }
+                                        app.chatItems.addAll(db.getChatList(MainActivity.this));
 //                            for (int i = 0; i < app.chatItems.size(); i++){
 //                                Log.d(MyUtil.TAG, "item: "+app.chatItems.get(i).toString());
 //                            }
 
-                            }
-                        }
+                                    }
+                                }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(MainActivity.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
-                    }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(MainActivity.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                            }
 
                         }
                     }).start();
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show(); // 대화내용 없거나 불러오기 실패
                 }
 
             }
         };
 
-        talkList.addParams("CONNECTCODE","APP");
-        talkList.addParams("siteUrl",NetUrls.MEDIADOMAIN);
+        talkList.addParams("CONNECTCODE", "APP");
+        talkList.addParams("siteUrl", NetUrls.MEDIADOMAIN);
 //        talkList.addParams("APPCONNECTCODE","APP");
-        talkList.addParams("dbControl","setTalkDogList");
+        talkList.addParams("dbControl", "setTalkDogList");
         talkList.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
         talkList.addParams("MEMCODE", UserPref.getIdx(this));
         talkList.addParams("m_uniq", UserPref.getDeviceId(this));
-        talkList.execute(true,false);
+        talkList.execute(true, false);
 
     }
 
-    public Handler mHandler = new Handler(){
+    public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 //            super.handleMessage(msg);
-            if(timeCount == RESETTIME){
+            if (timeCount == RESETTIME) {
                 timeCount = 0;
 //                addLips();   // 1시간 후 뼈다귀 추가 (5개까지 가능)
             }
 
-            if(MyUtil.isAppOnForeground(MainActivity.this)) {
+            if (MyUtil.isAppOnForeground(MainActivity.this)) {
                 timeCount++;
-            }else{
+            } else {
                 // 화면이 꺼졌거나 앱이 백그라운드로 들어갔을 때
             }
 
-            mHandler.sendEmptyMessageDelayed(0,1000);
+            mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     };
 
@@ -410,9 +417,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent serviceIntent = new Intent(this, ForegroundService.class);
 //        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
-        }else{
+        } else {
             startService(serviceIntent);
         }
 
@@ -429,11 +436,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        stopService();
     }
 
-    private void setFragment(int idx){
+    private void setFragment(int idx) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         Fragment frag = null;
-        switch (idx){
+        switch (idx) {
             case 0:
                 currPos = 0;
                 frag = new Mydog();
@@ -441,6 +448,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.btnChat.setSelected(false);
                 binding.btnCommand.setSelected(false);
                 binding.btnMore.setSelected(false);
+                binding.btnDictionary.setSelected(false);
                 break;
             case 1:
                 currPos = 1;
@@ -449,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.btnChat.setSelected(true);
                 binding.btnCommand.setSelected(false);
                 binding.btnMore.setSelected(false);
+                binding.btnDictionary.setSelected(false);
                 break;
             case 2:
                 currPos = 2;
@@ -456,6 +465,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.btnMydog.setSelected(false);
                 binding.btnChat.setSelected(false);
                 binding.btnCommand.setSelected(true);
+                binding.btnDictionary.setSelected(false);
                 binding.btnMore.setSelected(false);
                 break;
             case 3:
@@ -478,14 +488,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
-        ft.replace(R.id.fragment_area,frag);
+        ft.replace(R.id.fragment_area, frag);
         ft.commit();
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_mydog:
                 setFragment(0);
                 break;
@@ -504,11 +514,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void reqPermission(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+    private void reqPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{
                     Manifest.permission.RECORD_AUDIO
-            },0);
+            }, 0);
         }
     }
 
@@ -517,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (
-                    checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ) {
+                    checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
                 return false;
@@ -530,11 +540,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBarkDetected(final String filePath) {
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_area);
-        if (fragment instanceof Chatting){
+        if (fragment instanceof Chatting) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ((Chatting)fragment).detectAni(filePath);
+                    ((Chatting) fragment).detectAni(filePath);
                 }
             }).start();
         }

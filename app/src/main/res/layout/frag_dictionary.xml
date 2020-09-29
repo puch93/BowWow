@@ -16,6 +16,45 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:id="@+id/bone_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:src="@drawable/icon_bone" />
+
+                <TextView
+                    android:id="@+id/bone_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6.3dp"
+                    android:includeFontPadding="false"
+                    android:textColor="#f5352e"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    tools:text="10" />
+
+                <TextView
+                    android:id="@+id/gae"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text=" 개"
+                    android:textColor="#151515"
+                    android:textSize="17dp" />
+
+            </LinearLayout>
+
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -47,13 +86,14 @@
                     android:visibility="gone">
 
                     <FrameLayout
+                        android:id="@+id/btn_serchclose"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:paddingLeft="16dp"
                         android:paddingRight="10dp">
 
                         <ImageView
-                            android:id="@+id/btn_serchclose"
                             android:layout_width="20dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -67,6 +107,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:singleLine="true"
                         android:hint="검색어를 입력하세요"
                         android:textColor="@color/c_black15"
                         android:textSize="@dimen/middle_text" />
@@ -77,6 +118,7 @@
                     android:id="@+id/btn_search"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:paddingLeft="10dp"
                     android:paddingRight="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"

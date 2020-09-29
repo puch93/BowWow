@@ -73,9 +73,56 @@ public class Dictionary extends Fragment implements View.OnClickListener {
         binding.recyclerView.setItemViewCacheSize(20);
         binding.recyclerView.setAdapter(adapter);
 
+        getMyPoint();
+
         return binding.getRoot();
     }
 
+    private void getMyPoint() {
+        ReqBasic myPoint = new ReqBasic(getActivity(), NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getMypoint: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 등록하였습니다.","url":"", "point":"11"}
+                if (resultData.getResult() != null) {
+
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.has("point")) {
+
+                            if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
+                                if (MyUtil.isNull(jo.getString("point"))) {
+                                    binding.boneCount.setText("0");
+                                } else {
+                                    binding.boneCount.setText(jo.getString("point"));
+                                }
+                            } else {
+                                binding.boneCount.setText("구독권 이용중");
+                                binding.gae.setVisibility(View.GONE);
+                            }
+                        } else {
+                            binding.boneCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        myPoint.addParams("CONNECTCODE", "APP");
+        myPoint.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        myPoint.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
+        myPoint.addParams("dbControl", "getMemberPoint");
+        myPoint.addParams("MEMCODE", UserPref.getIdx(getActivity()));
+        myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
+        myPoint.execute(true, false);
+
+    }
     private ArrayList<DictionaryData> getSearchList(String keyword) {
         ArrayList<DictionaryData> searchList = new ArrayList<>();
 
@@ -95,6 +142,7 @@ public class Dictionary extends Fragment implements View.OnClickListener {
                 if (binding.searchArea.getVisibility() != View.VISIBLE) {
                     binding.searchArea.setVisibility(View.VISIBLE);
                     binding.title.setVisibility(View.GONE);
+                    binding.boneArea.setVisibility(View.GONE);
 //                    binding.llDetectmsgArea.setVisibility(View.GONE);
                 }else{
                     // 검색
@@ -121,6 +169,7 @@ public class Dictionary extends Fragment implements View.OnClickListener {
             case R.id.btn_serchclose:
                 binding.searchArea.setVisibility(View.GONE);
                 binding.title.setVisibility(View.VISIBLE);
+                binding.boneArea.setVisibility(View.VISIBLE);
                 binding.etSearch.setText(null);
 
                 act.runOnUiThread(new Runnable() {

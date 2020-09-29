@@ -10,9 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.app;
 import kr.core.bowwow.databinding.ActivityServieccenterBinding;
 
-public class ServiceCenterAct extends Activity implements View.OnClickListener {
+public class ServiceCenterAct extends BaseAct implements View.OnClickListener {
 
     ActivityServieccenterBinding binding;
 
@@ -21,7 +22,6 @@ public class ServiceCenterAct extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_servieccenter);
-
         binding.btnBack.setOnClickListener(this);
 
         binding.tvAppver.setText("v"+getAppVersion());

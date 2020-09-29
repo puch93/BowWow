@@ -32,7 +32,7 @@ import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
 
-public class DictionaryDetailAct extends AppCompatActivity implements View.OnClickListener {
+public class DictionaryDetailAct extends BaseAct implements View.OnClickListener {
     ActivityDictionaryDetailBinding binding;
     Activity act;
 

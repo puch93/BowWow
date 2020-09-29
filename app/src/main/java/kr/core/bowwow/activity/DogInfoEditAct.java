@@ -2,6 +2,7 @@ package kr.core.bowwow.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -31,10 +32,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +62,7 @@ import kr.core.bowwow.utils.AllOfDecoration;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
-public class DogInfoEditAct extends Activity implements View.OnClickListener {
+public class DogInfoEditAct extends BaseAct implements View.OnClickListener {
 
     ActivityDoginfoBinding binding;
 
@@ -77,11 +81,17 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
     final List<String> nameType = new ArrayList<>();
     final List<String> genderList = new ArrayList<>();
 
+    ProgressDialog pDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_doginfo);
         act = this;
+
+        pDialog = new ProgressDialog(act);
+        pDialog.setMessage("LOADING");
+        pDialog.setCancelable(false);
 
         binding.title.setText("반려견 정보수정");
 
@@ -118,19 +128,19 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
 
         /* get my info */
         binding.etKname.setText(app.myDogKname);
-        if(!MyUtil.checkKorean(app.myDogKname)) {
+        if (!MyUtil.checkKorean(app.myDogKname)) {
             binding.spnNameType.setSelection(1);
         }
 
         for (int i = 0; i < breedList.size(); i++) {
-            if(breedList.get(i).equalsIgnoreCase(app.myDogBreed)) {
+            if (breedList.get(i).equalsIgnoreCase(app.myDogBreed)) {
                 binding.spnBreed.setSelection(i);
                 break;
             }
         }
 
         for (int i = 0; i < breedList.size(); i++) {
-            if(genderList.get(i).equalsIgnoreCase(app.myDogGender)) {
+            if (genderList.get(i).equalsIgnoreCase(app.myDogGender)) {
                 binding.spnGender.setSelection(i);
                 break;
             }
@@ -138,8 +148,6 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
 
         binding.tvBirth.setText(app.myDogBirth);
     }
-
-
 
 
     private void setSpinner() {
@@ -456,76 +464,6 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
         }
     }
 
-    private void regDogInfo() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MultipartUtility mu = new MultipartUtility(NetUrls.DOMAIN, "UTF-8");
-
-                    mu.addFormField("CONNECTCODE", "APP");
-                    mu.addFormField("siteUrl", NetUrls.MEDIADOMAIN);
-                    mu.addFormField("dbControl", "setDogInfoRegi");
-                    mu.addFormField("_APP_MEM_IDX", UserPref.getIdx(DogInfoEditAct.this));
-                    mu.addFormField("MEMCODE", UserPref.getIdx(DogInfoEditAct.this));
-                    mu.addFormField("m_uniq", UserPref.getDeviceId(DogInfoEditAct.this));
-                    mu.addFormField("d_kname", binding.etKname.getText().toString());
-                    mu.addFormField("d_ename", binding.etKname.getText().toString());
-                    mu.addFormField("d_breed", binding.spnBreed.getSelectedItem().toString());
-                    mu.addFormField("d_gender", binding.spnGender.getSelectedItem().toString());
-                    mu.addFormField("d_birth", binding.tvBirth.getText().toString());
-
-                    for (int i = 1; i < image_list.size(); i++) {
-                        File img = new File(image_list.get(i));
-                        mu.addFilePart("d_pimg" + i, img);
-                    }
-
-                    Log.d(MyUtil.TAG, "input idx: " + UserPref.getIdx(DogInfoEditAct.this));
-
-                    String res = mu.finish();
-                    Log.d(MyUtil.TAG, "result: " + res);
-//                    {"result":"Y","message":"성공적으로 등록하였습니다.","url":"","MEMCODE":"359"}
-                    if (MyUtil.isNull(res)) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(DogInfoEditAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        try {
-                            JSONObject jo = new JSONObject(res);
-
-                            if (jo.getString("result").equalsIgnoreCase("Y")) {
-                                UserPref.setDogIdx(DogInfoEditAct.this, jo.getString("MEMCODE"));
-                                startActivity(new Intent(DogInfoEditAct.this, MainActivity.class));
-                                finish();
-                            } else {
-                                final String msg = jo.getString("message");
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(DogInfoEditAct.this, msg, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(DogInfoEditAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-//                    Toast.makeText(DogInfoAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }).start();
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -543,7 +481,7 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                if(binding.spnNameType.getSelectedItem().toString().equalsIgnoreCase("한글이름")) {
+                if (binding.spnNameType.getSelectedItem().toString().equalsIgnoreCase("한글이름")) {
                     if (!MyUtil.checkKorean(binding.etKname.getText().toString())) {
                         Toast.makeText(this, "한글 이름 확인", Toast.LENGTH_SHORT).show();
                         return;
@@ -570,70 +508,82 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                if(image_list.size() == 0) {
+                if (image_list.size() <= 1) {
                     Toast.makeText(this, "반려견 이미지를 확인해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-//                regDogInfo();
+                Log.i(StringUtil.TAG, "image_list size: " + image_list.size());
 
-                Toast.makeText(this, "개발중", Toast.LENGTH_SHORT).show();
+                editDogInfo();
 
                 break;
         }
     }
 
-    private void editDogInfo(){
+    private void editDogInfo() {
+        pDialog.show();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-                    MultipartUtility mu = new MultipartUtility(NetUrls.DOMAIN,"UTF-8");
+                try {
+                    MultipartUtility mu = new MultipartUtility(NetUrls.DOMAIN, "UTF-8");
 
-                    mu.addFormField("CONNECTCODE","APP");
-                    mu.addFormField("siteUrl",NetUrls.MEDIADOMAIN);
-                    mu.addFormField("dbControl","setDogInfoEdit");
+                    mu.addFormField("CONNECTCODE", "APP");
+                    mu.addFormField("siteUrl", NetUrls.MEDIADOMAIN);
+                    mu.addFormField("dbControl", "setDogInfoEdit");
                     mu.addFormField("_APP_MEM_IDX", UserPref.getIdx(act));
                     mu.addFormField("MEMCODE", UserPref.getIdx(act));
                     mu.addFormField("m_uniq", UserPref.getDeviceId(act));
-                    mu.addFormField("d_kname",app.myDogKname);
-                    mu.addFormField("d_ename",app.myDogKname);
-                    mu.addFormField("d_breed",app.myDogBreed);
-                    mu.addFormField("d_gender",app.myDogGender);
-                    mu.addFormField("d_birth",app.myDogBirth);
+                    mu.addFormField("d_kname", binding.etKname.getText().toString());
+                    mu.addFormField("d_ename", binding.etKname.getText().toString());
+                    mu.addFormField("d_breed", binding.spnBreed.getSelectedItem().toString());
+                    mu.addFormField("d_gender", binding.spnGender.getSelectedItem().toString());
+                    mu.addFormField("d_birth", binding.tvBirth.getText().toString());
 
-                    File img = new File(mImgFilePath);
-                    mu.addFilePart("d_pimg",img);
+                    for (int i = 1; i < image_list.size(); i++) {
+                        File img = null;
+                        if (image_list.get(i).contains("http")) {
+                            img = downloadImage(image_list.get(i));
+                        } else {
+                            img = new File(image_list.get(i));
+                        }
+
+                        if (i == 1) {
+                            mu.addFilePart("d_pimg", img);
+                        } else {
+                            mu.addFilePart("d_pimg" + i, img);
+                        }
+                    }
 
                     String res = mu.finish();
-                    Log.d(MyUtil.TAG, "mydog editDogInfo: "+res);
+                    Log.d(MyUtil.TAG, "mydog editDogInfo: " + res);
 //                    {"result":"Y","message":"성공적으로 등록하였습니다.","url":"","MEMCODE":"359"}
-                    if (MyUtil.isNull(res)){
+                    if (MyUtil.isNull(res)) {
                         act.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(act, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
                             }
                         });
-                    }else{
+                    } else {
                         try {
                             JSONObject jo = new JSONObject(res);
 
-                            if (jo.getString("result").equalsIgnoreCase("Y")){
+                            if (jo.getString("result").equalsIgnoreCase("Y")) {
                                 act.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         Toast.makeText(act, "반려경 정보가 수정되었습니다", Toast.LENGTH_SHORT).show();
-                                        finish();
                                     }
                                 });
-                            }else{
+                            } else {
                                 final String msg = jo.getString("message");
                                 act.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         Toast.makeText(act, msg, Toast.LENGTH_SHORT).show();
-                                        finish();
                                     }
                                 });
                             }
@@ -649,12 +599,117 @@ public class DogInfoEditAct extends Activity implements View.OnClickListener {
                         }
                     }
 
-                }catch (IOException e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(pDialog.isShowing()) {
+                                pDialog.dismiss();
+                            }
+                        }
+                    });
+
+                    getDogInfo();
+
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
             }
         }).start();
+    }
 
+    private void getDogInfo() {
+        // 반려견 정보 가져오기 및 세팅
+        ReqBasic dogInfo = new ReqBasic(this, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getDogInfo: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 수정하였습니다.","url":"","DOGCODE":"{"d_idx":"359","d_site":"1","d_user_idx":"0","d_pimg":"\/UPLOAD\/DOG_INFO\/30726684_eKARpZkE_profimg1217170040272885618.jpg","d_kname":"\uba4d\uba4d","d_ename":"mm","d_breed":"\ubd88\ub3c5","d_gender":"\ub0a8","d_birth":"2019.11.01","d_regdate":"2019-12-17 17:00:53","d_editdate":"0000-00-00 00:00:00"}"}
+
+                if (resultData.getResult() != null) {
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+//                        Log.d(MyUtil.TAG, "DOGCODE: "+jo.getJSONObject("DOGCODE"));
+                            Log.d(MyUtil.TAG, "DOGCODE: " + jo.getString("DOGCODE"));
+
+                            JSONObject dInfo = jo.getJSONObject("DOGCODE");
+
+                            app.myDogImgArray = new ArrayList<>();
+                            for (int i = 1; i < 6; i++) {
+                                if (i == 1) {
+                                    if (dInfo.has("d_pimg")) {
+                                        if (!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg"))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg"));
+                                        }
+                                    }
+                                } else {
+                                    if (dInfo.has("d_pimg" + i)) {
+                                        if (!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                        }
+                                    }
+                                }
+                            }
+
+                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg");
+                            app.myDogBreed = dInfo.getString("d_breed");
+                            app.myDogGender = dInfo.getString("d_gender");
+                            app.myDogBirth = dInfo.getString("d_birth");
+                            app.myDogKname = dInfo.getString("d_kname");
+
+                        } else {
+                            Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(act, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(act, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+
+                finish();
+            }
+        };
+
+        dogInfo.addParams("CONNECTCODE", "APP");
+        dogInfo.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        dogInfo.addParams("dbControl", "setDogInfo");
+        dogInfo.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
+        dogInfo.addParams("MEMCODE", UserPref.getIdx(this));
+        dogInfo.addParams("m_uniq", UserPref.getDeviceId(this));
+        dogInfo.execute(true, true);
+    }
+
+    public File downloadImage(String imgUrl) {
+        Bitmap img = null;
+        File f = null;
+        Log.e(StringUtil.TAG, "imgUrl: " + imgUrl);
+
+        try {
+            f = createImageFile();
+            URL url = new URL(imgUrl);
+            URLConnection conn = url.openConnection();
+
+            int nSize = conn.getContentLength();
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+            img = BitmapFactory.decodeStream(bis);
+
+            bis.close();
+
+            FileOutputStream out = new FileOutputStream(f);
+            img.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+
+            img.recycle();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return f;
     }
 }

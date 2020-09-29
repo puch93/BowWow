@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -65,7 +66,7 @@ import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
-public class SplashAct extends Activity {
+public class SplashAct extends BaseAct {
     Activity act;
     BillingManager billingManager;
 
@@ -86,8 +87,7 @@ public class SplashAct extends Activity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_splash);
@@ -118,9 +118,14 @@ public class SplashAct extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startProgram();
+                checkVer();
             }
         }, 1500);
+
+        /* check coupa alarm */
+        if (StringUtil.isNull(UserPref.getAlarmCoupa(act))) {
+            alarmSetting();
+        }
     }
 
     private void getFcmToken() {
@@ -150,7 +155,7 @@ public class SplashAct extends Activity {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (isReady && isPurchaseStateReady  && !MyUtil.isNull(fcm_token)) {
+                        if (isReady && isPurchaseStateReady && !MyUtil.isNull(fcm_token)) {
                             isReady = false;
                             Log.i(StringUtil.TAG, "run: ");
                             preSetting();
@@ -237,7 +242,23 @@ public class SplashAct extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(StringUtil.TAG, "resultCode: " + resultCode);
+
+        if (resultCode != RESULT_OK && resultCode != RESULT_CANCELED)
+            return;
+
+        switch (requestCode) {
+            case OVERLAY:
+                requestPermissionOverlay();
+                break;
+        }
+    }
+
     private void preSetting() {
+        Log.i(StringUtil.TAG, "preSetting: ");
         if (!StringUtil.isNull(UserPref.getFCheck(act))) {
             setUserInfo();
         } else {
@@ -252,6 +273,7 @@ public class SplashAct extends Activity {
     }
 
     private void doCsetting(final String checkTime) {
+        Log.i(StringUtil.TAG, "doCsetting: ");
         ReqBasic server = new ReqBasic(act, "https://coupang.adamstore.co.kr/lib/control.siso") {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
@@ -261,10 +283,10 @@ public class SplashAct extends Activity {
 
                         if (StringUtil.getStr(jo, "result").equalsIgnoreCase("Y")) {
                             UserPref.setFCheck(act, checkTime);
+                            setUserInfo();
                         } else {
-
+                            setUserInfo();
                         }
-                        setUserInfo();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -297,7 +319,7 @@ public class SplashAct extends Activity {
             mCalendar.set(Calendar.SECOND, 0);
         } else {
             //푸시 알림 셋팅값이 없으면, 현재시간으로 부터 1시간 후  값으로 설정
-            mCalendar.add(Calendar.MINUTE, 1);
+            mCalendar.add(Calendar.HOUR_OF_DAY, 1);
         }
 
         UserPref.setAlarmCoupa(act, mCalendar.getTimeInMillis() + "");
@@ -322,45 +344,46 @@ public class SplashAct extends Activity {
     private void checkVer() {
         ReqBasic checkVer = new ReqBasic(this, NetUrls.DOMAIN) {
             @Override
-            public void onAfter(int resultCode, HttpResult resultData) {
+            public void onAfter(int resultCode, final HttpResult resultData) {
                 Log.d(MyUtil.TAG, "checkVer: " + resultData.getResult());
 
                 if (resultData.getResult() != null) {
+                    final String res = resultData.getResult();
 
-                    try {
-                        JSONObject jo = new JSONObject(resultData.getResult());
-
-                        if (jo.getString("result").equalsIgnoreCase("Y")) {
-                            // 업데이트 버전 존재
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(SplashAct.this);
-                            dialog.setTitle("업데이트 알림");
-                            dialog.setMessage("플레이 스토어에 업데이트 버전이 있습니다. 업데이트 하시겠습니까?");
-                            dialog.setPositiveButton("업데이트", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(NetUrls.MARKETADDR)));
-                                    dialogInterface.dismiss();
+                    act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (!StringUtil.isNull(res)) {
+                                    JSONObject jo = new JSONObject(res);
+                                    if (StringUtil.getStr(jo, "result").equalsIgnoreCase("N")) {
+                                        android.app.AlertDialog.Builder alertDialogBuilder =
+                                                new android.app.AlertDialog.Builder(new ContextThemeWrapper(act, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert));
+                                        alertDialogBuilder.setTitle("업데이트");
+                                        alertDialogBuilder.setMessage("새로운 버전이 있습니다.")
+                                                .setPositiveButton("업데이트 바로가기", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=kr.core.bowwow"));
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                });
+                                        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                        alertDialog.setCanceledOnTouchOutside(false);
+                                        alertDialog.show();
+                                    } else {
+                                        startProgram();
+                                    }
+                                } else {
+                                    startProgram();
                                 }
-                            });
-
-                            dialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-
-                                }
-                            });
-
-                            dialog.show();
-                        } else {
-                            // 현재 최신 버전
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-//                        Toast.makeText(SplashAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
-
-                    }
+                    });
 
                 } else {
 //                    Toast.makeText(SplashAct.this, "버전 정보를 받지 못했습니다.", Toast.LENGTH_SHORT).show();
@@ -370,13 +393,14 @@ public class SplashAct extends Activity {
         };
 
         checkVer.addParams("CONNECTCODE", "APP");
-        checkVer.addParams("dbControl", "versionchk");
+        checkVer.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        checkVer.addParams("dbControl", "setPlaystorUpdateCheck");
         checkVer.addParams("thisVer", getAppVersion());
         checkVer.execute(true, true);
-
     }
 
     private void setUserInfo() {
+        Log.i(StringUtil.TAG, "setUserInfo: ");
         String cellnum;
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         cellnum = tm.getLine1Number();
@@ -435,10 +459,7 @@ public class SplashAct extends Activity {
 //        login.addParams("m_device_model",Build.MODEL);
 
 
-        //실제
         login.addParams("m_uniq", MyUtil.getDeviceId(this));
-        //테스트
-//        login.addParams("m_uniq", "355325072243259");
 
         TelephonyManager tManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         login.addParams("agent2", Build.MODEL + "@@@@@" + tManager.getNetworkOperatorName());
@@ -586,7 +607,6 @@ public class SplashAct extends Activity {
         talkList.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
         talkList.addParams("MEMCODE", UserPref.getIdx(this));
         talkList.addParams("m_uniq", UserPref.getDeviceId(this));
-//        talkList.addParams("m_uniq", "355325072243259");
         talkList.execute(true, false);
     }
 

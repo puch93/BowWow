@@ -37,7 +37,7 @@ import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
 
-public class MydogProfAct extends Activity implements View.OnClickListener {
+public class MydogProfAct extends BaseAct implements View.OnClickListener {
 
     ActivityMydogprofBinding binding;
 

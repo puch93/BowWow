@@ -15,6 +15,45 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:id="@+id/bone_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:src="@drawable/icon_bone" />
+
+                <TextView
+                    android:id="@+id/bone_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6.3dp"
+                    android:includeFontPadding="false"
+                    android:textColor="#f5352e"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    tool:text="10" />
+
+                <TextView
+                    android:id="@+id/gae"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text=" 개"
+                    android:textColor="#151515"
+                    android:textSize="17dp" />
+
+            </LinearLayout>
+
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -34,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:paddingRight="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -266,7 +306,7 @@
                                 android:id="@+id/btn_regphoto"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:background="@drawable/pettranslate_btn_main_editprofile_200117"
+                                android:background="@drawable/ripple_mydog_camera"
                                 android:elevation="2dp" />
 
                         </LinearLayout>
@@ -288,7 +328,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:layout_weight="1"
-                            android:background="@drawable/sel_btnm1"
+                            android:background="@drawable/ripple_mydog_menu01"
                             android:gravity="center"
                             android:text="유래"
                             android:textColor="@color/c_white"
@@ -300,7 +340,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:layout_weight="1"
-                            android:background="@drawable/sel_btnm2"
+                            android:background="@drawable/ripple_mydog_menu02"
                             android:gravity="center"
                             android:text="성격"
                             android:textColor="@color/c_white"
@@ -313,7 +353,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:layout_weight="1"
-                            android:background="@drawable/sel_btnm3"
+                            android:background="@drawable/ripple_mydog_menu03"
                             android:gravity="center"
                             android:text="질병"
                             android:textColor="@color/c_white"
@@ -324,7 +364,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/sel_btnm4"
+                            android:background="@drawable/ripple_mydog_menu04"
                             android:gravity="center"
                             android:text="특징"
                             android:textColor="@color/c_white"
@@ -352,7 +392,7 @@
                 android:layout_gravity="right|bottom"
                 android:layout_marginRight="30dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/pettranslate_btn_top_200117"
+                android:background="@drawable/ripple_mydog_up"
                 android:elevation="2dp" />
 
         </FrameLayout>

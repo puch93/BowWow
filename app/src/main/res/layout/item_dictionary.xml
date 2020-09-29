@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="55dp"
             android:layout_height="21dp"
-            android:background="@drawable/btn_book_more"
+            android:background="@drawable/ripple_dic_more"
             android:gravity="center"
             android:textColor="@color/c_white"
             android:textSize="12dp"

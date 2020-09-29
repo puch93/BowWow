@@ -32,10 +32,11 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/btn_play_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="14dp"
-                android:background="@drawable/pettranslate_bg_orderpop01_playbg_191125"
+                android:background="@drawable/ripple_dlg_command"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 

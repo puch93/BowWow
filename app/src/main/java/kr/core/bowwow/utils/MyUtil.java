@@ -1,9 +1,11 @@
 package kr.core.bowwow.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -34,7 +36,7 @@ import kr.core.bowwow.dto.pref.UserPref;
 
 public class MyUtil {
 
-    public static String TAG = "bowwow";
+    public static String TAG = "TEST_HOME";
     public static final String BANNER = "B";
     public static final String ADMOB = "A";
     public static final String NONE = "N";
@@ -42,14 +44,45 @@ public class MyUtil {
     public static final String DOG = "dog";
     public static final String PERSON = "people";
 
-    public static float convertDpToPixel(float dp, Context context){
+    public interface OnAlertAfter {
+        void onAfterOk();
+        void onAfterCancel();
+    }
+
+    public static void showAlert(Activity act, String title, String contents, final OnAlertAfter onAlertAfter) {
+        androidx.appcompat.app.AlertDialog.Builder alertDialog = new androidx.appcompat.app.AlertDialog.Builder(act);
+
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(contents);
+
+        // ok
+        alertDialog.setPositiveButton("예",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onAlertAfter.onAfterOk();
+                        dialog.cancel();
+                    }
+                });
+        // cancel
+        alertDialog.setNegativeButton("아니오",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onAlertAfter.onAfterCancel();
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return px;
     }
 
-    public static float convertPixelsToDp(float px, Context context){
+    public static float convertPixelsToDp(float px, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / (metrics.densityDpi / 160f);
@@ -59,13 +92,13 @@ public class MyUtil {
     public static String getAge(String year) {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat formats;
-        formats = new SimpleDateFormat ( "yyyy");
+        formats = new SimpleDateFormat("yyyy");
 
-//Finalvar.birth_year의 값은 1950년 1월 20일
+        //Finalvar.birth_year의 값은 1950년 1월 20일
         int time2 = Integer.parseInt(formats.format(cal.getTime()));
         int ageSum = Integer.parseInt(year);
 
-        return Integer.toString(time2 - ageSum +1);
+        return Integer.toString(time2 - ageSum + 1);
     }
 
     public static String getDday(int a_year, int a_monthOfYear, int a_dayOfMonth) {
@@ -118,41 +151,38 @@ public class MyUtil {
             }
         }
 
-        if (!MyUtil.isNull(newId)){
+        if (!MyUtil.isNull(newId)) {
             //실제
-//            UserPref.setDeviceId(ctx,newId);
+            UserPref.setDeviceId(ctx,newId);
             //테스트
-            UserPref.setDeviceId(ctx,"355325072243220");
+//            UserPref.setDeviceId(ctx, "355325072241290");
         }
 
         // 실제
-//        return newId;
-        // 테스트
-        return "355325072243220";
-
+        return newId;
     }
 
-    public static boolean isNull(String str){
-        if(str == null || str.length() == 0 || str.equals("null")){
+    public static boolean isNull(String str) {
+        if (str == null || str.length() == 0 || str.equals("null")) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public static String setNumComma(long price){
+    public static String setNumComma(long price) {
         DecimalFormat format = new DecimalFormat("###,###");
         return format.format(price);
     }
 
-    public static List<String> getBreedInfo(Context context,String breed){
+    public static List<String> getBreedInfo(Context context, String breed) {
         List<String> result = new ArrayList<>();
-        switch (breed){
+        switch (breed) {
             case "요크셔테리어":
                 result.addAll(Arrays.asList(context.getResources().getStringArray(R.array.breed1)));
                 break;
             case "비글":
-                result.addAll( Arrays.asList(context.getResources().getStringArray(R.array.breed2)));
+                result.addAll(Arrays.asList(context.getResources().getStringArray(R.array.breed2)));
                 break;
             case "닥스훈트":
                 result.addAll(Arrays.asList(context.getResources().getStringArray(R.array.breed3)));
@@ -282,7 +312,7 @@ public class MyUtil {
             case "포메라니안":
                 return R.drawable.d08;
             case "셔틀랜드 쉽독":
-               return  R.drawable.d09;
+                return R.drawable.d09;
             case "보스턴테리어":
                 return R.drawable.d10;
             case "말티즈":
@@ -344,15 +374,15 @@ public class MyUtil {
         }
     }
 
-    public static boolean isAppOnForeground(Context context){
-        ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+    public static boolean isAppOnForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        if(appProcesses == null){
+        if (appProcesses == null) {
             return false;
         }
         final String packageName = context.getPackageName();
-        for(ActivityManager.RunningAppProcessInfo appProcess:appProcesses){
-            if(appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)){
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
                 return true;
             }
         }
@@ -364,7 +394,7 @@ public class MyUtil {
      * @param str 입력 String
      * @return 한글(true) / 한글제외(false)
      */
-    public static boolean checkKorean(String str){
+    public static boolean checkKorean(String str) {
         String regex = "^[가-힣]+$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(str);
@@ -376,7 +406,7 @@ public class MyUtil {
      * @param str 입력 String
      * @return 영문(true) / 영문제외(false)
      */
-    public static boolean checkEnglish(String str){
+    public static boolean checkEnglish(String str) {
         String regex = "^[a-zA-Z]+$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(str);

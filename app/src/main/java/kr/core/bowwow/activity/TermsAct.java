@@ -11,7 +11,7 @@ import kr.core.bowwow.R;
 import kr.core.bowwow.databinding.ActivityTermsBinding;
 
 
-public class TermsAct extends Activity implements View.OnClickListener {
+public class TermsAct extends BaseAct implements View.OnClickListener {
 
     ActivityTermsBinding binding;
 

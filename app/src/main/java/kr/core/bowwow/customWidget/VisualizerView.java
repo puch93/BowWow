@@ -31,7 +31,11 @@ public class VisualizerView extends View {
         mForePaint.setAntiAlias(true);
 //        mForePaint.setColor(Color.rgb(0, 128, 255));
 //        mForePaint.setColor(Color.rgb(244, 76, 70));
-        mForePaint.setColor(Color.rgb(255, 255, 255));
+//        mForePaint.setColor(Color.rgb(255, 255, 255));
+    }
+
+    public void setColor(int color) {
+        mForePaint.setColor(color);
     }
 
     public void updateVisualizer(@Nullable byte[] bytes) {

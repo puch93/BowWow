@@ -42,13 +42,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.BaseAct;
 import kr.core.bowwow.databinding.LayoutWebviewBinding;
 import kr.core.bowwow.dto.pref.UserPref;
 import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.ReqBasic;
 
 
-public class LayoutWebView extends AppCompatActivity implements View.OnClickListener {
+public class LayoutWebView extends BaseAct implements View.OnClickListener {
     LayoutWebviewBinding binding;
     Activity act;
     CookieManager cookieManager;
@@ -94,9 +95,9 @@ public class LayoutWebView extends AppCompatActivity implements View.OnClickList
 
                 if (Integer.valueOf(UserPref.getFCheck(act)) > 0 &&
                         Integer.valueOf(UserPref.getFCheck(act)) < 24) {
-//                    h = (Integer.valueOf(UserPref.getFCheck(act)) -1) + "";
+                    h = (Integer.valueOf(UserPref.getFCheck(act)) -1) + "";
                     //TODO
-                    h = (Integer.valueOf(UserPref.getFCheck(act)) + 1) + "";
+//                    h = (Integer.valueOf(UserPref.getFCheck(act)) + 1) + "";
                 } else {
                     h = "23";
                 }

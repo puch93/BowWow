@@ -3,11 +3,13 @@ package kr.core.bowwow.dto.pref;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import kr.core.bowwow.app;
+
 public class UserPref {
 
     public static String getFCheck(Context context){
         SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
-        return pref.getString("fcheck","");
+        return pref.getString("fcheck",null);
     }
 
     public static void setFCheck(Context context,String idx){
@@ -19,7 +21,7 @@ public class UserPref {
 
     public static String getAlarmCoupa(Context context){
         SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
-        return pref.getString("alarm_coupa","");
+        return pref.getString("alarm_coupa",null);
     }
 
     public static void setAlarmCoupa(Context context,String idx){
@@ -79,8 +81,13 @@ public class UserPref {
     }
 
     public static String getSubscribeState(Context context){
-        SharedPreferences pref = context.getSharedPreferences("user",context.MODE_PRIVATE);
-        return pref.getString("substate","N");
+        if(context != null) {
+            SharedPreferences pref = context.getSharedPreferences("user", context.MODE_PRIVATE);
+            return pref.getString("substate", "N");
+        } else {
+            SharedPreferences pref = app.ctx.getSharedPreferences("user", context.MODE_PRIVATE);
+            return pref.getString("substate", "N");
+        }
     }
 
     public static void setSubscribeState(Context context,String substate){

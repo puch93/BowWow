@@ -72,9 +72,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             holder.btn_close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    buttonClickListener.deleteClicked();
                     list.remove(position);
                     notifyDataSetChanged();
+                    buttonClickListener.deleteClicked();
                 }
             });
 

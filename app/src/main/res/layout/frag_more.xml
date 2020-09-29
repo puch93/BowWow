@@ -15,6 +15,45 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:id="@+id/bone_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:src="@drawable/icon_bone" />
+
+                <TextView
+                    android:id="@+id/bone_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6.3dp"
+                    android:includeFontPadding="false"
+                    android:textColor="#f5352e"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    tool:text="10" />
+
+                <TextView
+                    android:id="@+id/gae"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text=" 개"
+                    android:textColor="#151515"
+                    android:textSize="17dp" />
+
+            </LinearLayout>
+
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -52,8 +91,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/c_white"
-                    android:paddingBottom="20dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -148,6 +187,7 @@
                             android:id="@+id/mydog_modify"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:background="?android:attr/selectableItemBackgroundBorderless"
                             android:padding="4dp"
                             android:src="@drawable/pettranslate_btn_more_set_200117" />
 
@@ -164,11 +204,11 @@
                             android:id="@+id/btn_payment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/box_more_top_up_box"
                             android:layout_gravity="bottom"
-                            android:paddingLeft="18dp"
+                            android:background="@drawable/ripple_more_bone"
                             android:gravity="center_vertical"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:paddingLeft="18dp">
 
                             <TextView
                                 android:id="@+id/text"
@@ -181,8 +221,8 @@
 
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_marginTop="3dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
                                 android:text="뼈다귀를 충전해서 더 즐겁게 이용하세요"
                                 android:textColor="#151515"
                                 android:textSize="13dp"
@@ -224,125 +264,131 @@
                 </FrameLayout>
 
                 <LinearLayout
-                    android:id="@+id/btn_pushstate"
                     android:layout_width="match_parent"
-                    android:layout_height="71dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/c_white"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="18dp"
-                    android:paddingRight="18dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/pettranslate_img_more_moreicon01_200117" />
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:id="@+id/btn_pushstate"
+                        android:layout_width="match_parent"
+                        android:layout_height="71dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="18dp"
+                        android:paddingRight="18dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pettranslate_img_more_moreicon01_200117" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:text="푸시알림"
+                                android:textColor="@color/c_black1D"
+                                android:textSize="@dimen/xxxlarge_text" />
+
+                        </LinearLayout>
+
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/sw_chat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:textSize="14dp"
+                            android:thumb="@drawable/switch_thumb"
+                            app:track="@drawable/switch_track" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:orientation="vertical">
+                        android:background="@drawable/pettranslate_img_1pxline_200117" />
+
+                    <LinearLayout
+                        android:id="@+id/btn_scenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="71dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="18dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pettranslate_img_more_moreicon02_200117" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:includeFontPadding="false"
-                            android:text="푸시알림"
+                            android:layout_marginLeft="20dp"
+                            android:text="고객센터"
                             android:textColor="@color/c_black1D"
                             android:textSize="@dimen/xxxlarge_text" />
 
                     </LinearLayout>
 
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/sw_chat"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:textSize="14dp"
-                        android:thumb="@drawable/switch_thumb"
-                        app:track="@drawable/switch_track" />
+                        android:background="@drawable/pettranslate_img_1pxline_200117" />
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/btn_qna"
+                        android:layout_width="match_parent"
+                        android:layout_height="71dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="18dp">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/pettranslate_img_1pxline_200117" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pettranslate_img_more_moreicon03_200117" />
 
-                <LinearLayout
-                    android:id="@+id/btn_scenter"
-                    android:layout_width="match_parent"
-                    android:layout_height="71dp"
-                    android:background="@color/c_white"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="문의하기"
+                            android:textColor="@color/c_black1D"
+                            android:textSize="@dimen/xxxlarge_text" />
+
+                    </LinearLayout>
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/pettranslate_img_more_moreicon02_200117" />
+                        android:background="@drawable/pettranslate_img_1pxline_200117" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="고객센터"
-                        android:textColor="@color/c_black1D"
-                        android:textSize="@dimen/xxxlarge_text" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/pettranslate_img_1pxline_200117" />
-
-                <LinearLayout
-                    android:id="@+id/btn_qna"
-                    android:layout_width="match_parent"
-                    android:layout_height="71dp"
-                    android:background="@color/c_white"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/coupa_banner"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/pettranslate_img_more_moreicon03_200117" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="문의하기"
-                        android:textColor="@color/c_black1D"
-                        android:textSize="@dimen/xxxlarge_text" />
+                        android:adjustViewBounds="true" />
 
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/pettranslate_img_1pxline_200117" />
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:id="@+id/coupa_banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true" />
 
             </LinearLayout>
-
 
         </ScrollView>
 

@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.BaseAct;
 import kr.core.bowwow.activity.MainActivity;
 import kr.core.bowwow.app;
 import kr.core.bowwow.customWidget.VisualizerView;
@@ -51,7 +52,7 @@ import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 
-public class DlgDogTrans extends Activity {
+public class DlgDogTrans extends BaseAct {
 
     DlgTransdogBinding binding;
 
@@ -100,7 +101,13 @@ public class DlgDogTrans extends Activity {
         }
 
         Glide.with(this).load(app.myDogImg).transform(new CircleCrop()).into(binding.dogImage);
-        Glide.with(this).load(R.raw.dogtop).transform(new CircleCrop()).into(binding.dogImageGif);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(getApplicationContext()).load(R.raw.dogtop).transform(new CircleCrop()).into(binding.dogImageGif);
+            }
+        });
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +115,6 @@ public class DlgDogTrans extends Activity {
                 finish();
             }
         });
-
     }
 
     private void regDogSay() {

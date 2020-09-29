@@ -9,8 +9,11 @@ import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -23,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.internal.service.Common;
@@ -42,9 +46,12 @@ import kr.core.bowwow.customWidget.VisualizerView;
 import kr.core.bowwow.databinding.FragChattingBinding;
 import kr.core.bowwow.detectApi.DetectorThread;
 import kr.core.bowwow.detectApi.RecorderThread;
+import kr.core.bowwow.dialogAct.DlgCommandPlay;
 import kr.core.bowwow.dialogAct.DlgDogTrans;
+import kr.core.bowwow.dialogAct.DlgPayment;
 import kr.core.bowwow.dialogAct.DlgPersonTrans;
 import kr.core.bowwow.dto.ChatItem;
+import kr.core.bowwow.dto.CommandItem;
 import kr.core.bowwow.dto.pref.UserPref;
 import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.NetUrls;
@@ -82,23 +89,21 @@ public class Chatting extends Fragment implements View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.frag_chatting, container, false);
         act = getActivity();
         binding.title.setTypeface(app.tf_bmjua);
+        binding.dogName.setTypeface(app.tf_bmjua);
 
         setClickListener();
         setBanner();
 
+//        getMyPoint();
+
         binding.rcvChat.setLayoutManager(new LinearLayoutManager(act));
 //        binding.rcvChat.setHasFixedSize(true);
-        adapter = new ChatAdapter(act,app.chatItems);
+        adapter = new ChatAdapter(act, app.chatItems);
         binding.rcvChat.setAdapter(adapter);
 
 //        getTalkList();
 
 //        startService();
-        setDetectApi();
-
-
-
-
 
 //        YoYo.with(Techniques.FadeIn)
 //                .duration(1000)
@@ -109,22 +114,76 @@ public class Chatting extends Fragment implements View.OnClickListener {
 //        binding.drawview.addView(mVisualizerView);
 
         binding.dogNameBottom.setText(app.myDogKname);
-        YoYo.with(Techniques.FadeIn)
-                .duration(1000)
-                .repeat(YoYo.INFINITE)
-                .playOn(binding.areaListening);
+//        YoYo.with(Techniques.FadeIn)
+//                .duration(1000)
+//                .repeat(YoYo.INFINITE)
+//                .playOn(binding.areaListening);
+        binding.dogName.setText(app.myDogKname);
+        binding.dogName02.setText(app.myDogKname);
 
+        Glide.with(act).load(R.raw.pettranslate_img_translate01_animation).into(binding.gifDog);
+
+        binding.areaListening.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.i(StringUtil.TAG, "onTouch: ACTION_DOWN");
+                        act.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.areaListeningAll.setVisibility(View.VISIBLE);
+                            }
+                        });
+                        binding.areaListening.setPressed(true);
+                        setDetectApi();
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        Log.i(StringUtil.TAG, "onTouch: ACTION_UP");
+
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                act.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        binding.areaListeningAll.setVisibility(View.GONE);
+                                    }
+                                });
+                                binding.areaListening.setPressed(false);
+                                releaseDetectApi();
+                            }
+                        }, 1500);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+        binding.areaListeningAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        binding.rcvChat.scrollToPosition(app.chatItems.size()-1);
-        adapter.notifyDataSetChanged();
+        getMyPoint();
+        adapter.setList(app.chatItems);
+        binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
+//        adapter.notifyDataSetChanged();
     }
 
-    private void setDetectApi(){
+    private void setDetectApi() {
+        Log.i(StringUtil.TAG, "setDetectApi: ");
         selectedDetection = DETECT_WHISTLE;
         recorderThread = new RecorderThread();
         recorderThread.start();
@@ -133,7 +192,8 @@ public class Chatting extends Fragment implements View.OnClickListener {
         detectorThread.start();
     }
 
-    private void releaseDetectApi(){
+    private void releaseDetectApi() {
+        Log.i(StringUtil.TAG, "releaseDetectApi: ");
         if (recorderThread != null) {
             recorderThread.stopRecording();
             recorderThread = null;
@@ -145,7 +205,8 @@ public class Chatting extends Fragment implements View.OnClickListener {
         selectedDetection = DETECT_NONE;
     }
 
-    public void detectAni(final String filePath){
+    public void detectAni(final String filePath) {
+
         app.isTrans = true;
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -172,43 +233,51 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
         mVisualizer.setEnabled(true);
         if (mp != null) {
-            mp.start();
+//            mp.start();
+            app.isTrans = false;
+            mVisualizer.setEnabled(false);
+            mVisualizer.release();
+
+            Intent dogTrans = new Intent(act, DlgDogTrans.class);
+            dogTrans.putExtra("path", filePath);
+            dogTrans.putExtra("td_run_time", String.valueOf(mp.getDuration()));
+            startActivity(dogTrans);
         }
 
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                app.isTrans = false;
-                mVisualizer.setEnabled(false);
-                mVisualizer.release();
-                if (act != null) {
-                    Intent dogTrans = new Intent(act, DlgDogTrans.class);
-                    dogTrans.putExtra("path", filePath);
-                    dogTrans.putExtra("td_run_time", String.valueOf(mp.getDuration()));
-                    startActivity(dogTrans);
-                }
-                mp.reset();
-            }
-        });
+//        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mediaPlayer) {
+//                app.isTrans = false;
+//                mVisualizer.setEnabled(false);
+//                mVisualizer.release();
+//                if (act != null) {
+//                    Intent dogTrans = new Intent(act, DlgDogTrans.class);
+//                    dogTrans.putExtra("path", filePath);
+//                    dogTrans.putExtra("td_run_time", String.valueOf(mp.getDuration()));
+//                    startActivity(dogTrans);
+//                }
+//                mp.reset();
+//            }
+//        });
     }
 
-    private void setClickListener(){
+    private void setClickListener() {
         binding.btnSend.setOnClickListener(this);
 
         binding.btnSearch.setOnClickListener(this);
         binding.btnSerchclose.setOnClickListener(this);
     }
 
-    private void setBanner(){
-        if (MyUtil.isNull(app.bannerState)){
+    private void setBanner() {
+        if (MyUtil.isNull(app.bannerState)) {
             binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
             binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
             // admob 설정
 
             binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
 //            binding.bannerArea.getRoot().setVisibility(View.GONE);
-        }else{
-            switch (app.bannerState){
+        } else {
+            switch (app.bannerState) {
                 case MyUtil.BANNER:
                     binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
                     binding.bannerArea.bannerAdmob.setVisibility(View.GONE);
@@ -277,9 +346,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
                                             }
                                         });
                                     } else {
-
                                     }
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -300,7 +367,6 @@ public class Chatting extends Fragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         adapter.stopMediaplayer();
-
     }
 
     @Override
@@ -318,37 +384,39 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_serchclose:
                 binding.searchArea.setVisibility(View.GONE);
                 binding.title.setVisibility(View.VISIBLE);
+                binding.boneArea.setVisibility(View.VISIBLE);
 //                binding.llDetectmsgArea.setVisibility(View.VISIBLE);
                 binding.etSearch.setText(null);
-                adapter = new ChatAdapter(act,app.chatItems);
+                adapter = new ChatAdapter(act, app.chatItems);
                 binding.rcvChat.setAdapter(adapter);
                 break;
             case R.id.btn_search:
                 if (binding.searchArea.getVisibility() != View.VISIBLE) {
                     binding.searchArea.setVisibility(View.VISIBLE);
                     binding.title.setVisibility(View.GONE);
+                    binding.boneArea.setVisibility(View.GONE);
 //                    binding.llDetectmsgArea.setVisibility(View.GONE);
-                }else{
+                } else {
                     // 검색
-                    if (binding.etSearch.length() == 0){
+                    if (binding.etSearch.length() == 0) {
                         Toast.makeText(act, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    Toast.makeText(act, binding.etSearch.getText()+" 검색", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(act, binding.etSearch.getText() + " 검색", Toast.LENGTH_SHORT).show();
 
                     searchList.clear();
-                    searchList.addAll(db.getChatSearchList(act,binding.etSearch.getText().toString()));
+                    searchList.addAll(db.getChatSearchList(act, binding.etSearch.getText().toString()));
 
-                    if (searchList.size() == 0){
+                    if (searchList.size() == 0) {
                         Toast.makeText(act, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
                         adapter = new ChatAdapter(act, searchList);
                         binding.rcvChat.setAdapter(adapter);
-                    }else {
+                    } else {
                         adapter = new ChatAdapter(act, searchList);
                         binding.rcvChat.setAdapter(adapter);
                     }
@@ -356,22 +424,171 @@ public class Chatting extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_send:
                 Log.d(MyUtil.TAG, "btn_send");
-                if (binding.etMsg.length() == 0){
-                    Toast.makeText(act, "메세지를 입력하세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(binding.btnSend.getWindowToken(), 0);
 
 
-                if (!app.isTrans) {
-                    Intent pmsg = new Intent(act, DlgPersonTrans.class);
-                    pmsg.putExtra("pmsg",binding.etMsg.getText().toString());
-                    startActivity(pmsg);
-                    binding.etMsg.setText(null);
+                if (binding.etMsg.length() == 0) {
+                    Toast.makeText(act, "메세지를 입력하세요.", Toast.LENGTH_SHORT).show();
+                } else {
+//                    if (!app.isTrans) {
+                    if (UserPref.getSubscribeState(act).equalsIgnoreCase("N")) {
+                        MyUtil.showAlert(act, "대화하기", "대화 요청시 뼈다귀 1개가 차감됩니다. (소진된 뼈다귀는 10분에 1개씩 자동충전됩니다.)", new MyUtil.OnAlertAfter() {
+                            @Override
+                            public void onAfterOk() {
+//                                checkPay(binding.etMsg.getText().toString());
+                                pointMinus(binding.etMsg.getText().toString());
+                            }
+
+                            @Override
+                            public void onAfterCancel() {
+
+                            }
+                        });
+                    } else {
+                        Intent pmsg = new Intent(act, DlgPersonTrans.class);
+                        pmsg.putExtra("pmsg", binding.etMsg.getText().toString());
+                        startActivity(pmsg);
+                        binding.etMsg.setText(null);
+                    }
+//                    }
                 }
+
                 break;
         }
+    }
+
+    private void pointMinus(final String contents){
+        ReqBasic pointMinus = new ReqBasic(act, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+//                {"result":"N","message":"포인트가 부족합니다.","url":"","point":""}
+                Log.d(MyUtil.TAG, "pointMinus: "+resultData.getResult());
+
+                if (resultData.getResult() != null) {
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+                            Intent pmsg = new Intent(act, DlgPersonTrans.class);
+                            pmsg.putExtra("pmsg", contents);
+                            startActivity(pmsg);
+                            binding.etMsg.setText(null);
+
+                            getMyPoint();
+                        } else {
+                            Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                            act.startActivity(new Intent(act, DlgPayment.class));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        pointMinus.addParams("CONNECTCODE","APP");
+        pointMinus.addParams("siteUrl",NetUrls.MEDIADOMAIN);
+        pointMinus.addParams("_APP_MEM_IDX", UserPref.getIdx(act));
+        pointMinus.addParams("dbControl","setPointMinus");
+        pointMinus.addParams("MEMCODE", UserPref.getIdx(act));
+        pointMinus.addParams("m_uniq", UserPref.getDeviceId(act));
+        pointMinus.addParams("MINUSP", "1");
+        pointMinus.addParams("MINUS_CONTENTS", "채팅 사용");
+        pointMinus.execute(true,true);
+    }
+
+    private void checkPay(final String contents) {
+        ReqBasic checkPay = new ReqBasic(act, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "checkPay (Chatting): " + resultData.getResult());
+
+                if (resultData.getResult() != null) {
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+                            Intent pmsg = new Intent(act, DlgPersonTrans.class);
+                            pmsg.putExtra("pmsg", contents);
+                            startActivity(pmsg);
+                            binding.etMsg.setText(null);
+
+                            getMyPoint();
+                        } else {
+                            Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                            act.startActivity(new Intent(act, DlgPayment.class));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
+
+        checkPay.addParams("CONNECTCODE", "APP");
+        checkPay.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        checkPay.addParams("_APP_MEM_IDX", UserPref.getIdx(act));
+        checkPay.addParams("dbControl", "setPaymentCk");
+        checkPay.addParams("MEMCODE", UserPref.getIdx(act));
+        checkPay.addParams("m_uniq", UserPref.getDeviceId(act));
+        checkPay.addParams("MINUSP", "1");
+        checkPay.execute(true, true);
+    }
+
+
+    private void getMyPoint() {
+        ReqBasic myPoint = new ReqBasic(getActivity(), NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getMypoint: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 등록하였습니다.","url":"", "point":"11"}
+                if (resultData.getResult() != null) {
+
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.has("point")) {
+
+                            if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
+                                if (MyUtil.isNull(jo.getString("point"))) {
+                                    binding.boneCount.setText("0");
+                                } else {
+                                    binding.boneCount.setText(jo.getString("point"));
+                                }
+                            } else {
+                                binding.boneCount.setText("구독권 이용중");
+                                binding.gae.setVisibility(View.GONE);
+                            }
+                        } else {
+                            binding.boneCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        myPoint.addParams("CONNECTCODE", "APP");
+        myPoint.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        myPoint.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
+        myPoint.addParams("dbControl", "getMemberPoint");
+        myPoint.addParams("MEMCODE", UserPref.getIdx(getActivity()));
+        myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
+        myPoint.execute(true, false);
+
     }
 }

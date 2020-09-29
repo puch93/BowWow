@@ -65,7 +65,7 @@ import kr.core.bowwow.utils.AllOfDecoration;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
-public class DogInfoAct extends Activity implements View.OnClickListener {
+public class DogInfoAct extends BaseAct implements View.OnClickListener {
 
     ActivityDoginfoBinding binding;
 
@@ -451,7 +451,12 @@ public class DogInfoAct extends Activity implements View.OnClickListener {
 
                     for (int i = 1; i < image_list.size(); i++) {
                         File img = new File(image_list.get(i));
-                        mu.addFilePart("d_pimg" + i, img);
+
+                        if(i == 1) {
+                            mu.addFilePart("d_pimg", img);
+                        } else {
+                            mu.addFilePart("d_pimg" + i, img);
+                        }
                     }
 
                     Log.d(MyUtil.TAG, "input idx: " + UserPref.getIdx(DogInfoAct.this));
@@ -544,7 +549,7 @@ public class DogInfoAct extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                if(image_list.size() == 0) {
+                if(image_list.size() <= 1) {
                     Toast.makeText(this, "반려견 이미지를 확인해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }

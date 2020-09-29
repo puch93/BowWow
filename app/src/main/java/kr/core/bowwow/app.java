@@ -3,6 +3,7 @@ package kr.core.bowwow;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -37,6 +38,7 @@ import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
 
 public class app extends Application {
+    public static Context ctx;
 
     public static final int REQUEST_TAKE_PHOTO = 2001;
     public static final int REQUEST_TAKE_ALBUM = 2002;
@@ -68,6 +70,7 @@ public class app extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ctx = getApplicationContext();
 
         tf_bmjua = Typeface.createFromAsset(getAssets(),"bmjua_ttf.ttf");
 

@@ -26,62 +26,40 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.DictionaryDetailAct"></activity>
+        <activity android:name=".activity.BaseAct"></activity>
+        <activity android:name=".activity.DictionaryDetailAct" />
 
         <service
             android:name=".service.ForegroundService"
             android:enabled="true"
-            android:exported="true" /> <!-- <receiver android:name=".receiver.BootReceiver" -->
-        <!-- android:enabled="true" -->
-        <!-- android:exported="false"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+            android:exported="true" />
+
         <activity android:name=".activity.SplashAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".utils.LayoutWebView"
-            android:icon="@drawable/coupang"
-            android:label="쿠팡"
             android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
-            android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/status_matarial"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
+        <activity
+            android:name=".activity.PushAct"/>
         <activity
             android:name=".activity.DogInfoAct"
             android:theme="@style/status_matarial">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".activity.DogInfoEditAct"

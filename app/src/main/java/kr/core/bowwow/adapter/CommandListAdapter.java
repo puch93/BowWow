@@ -49,10 +49,16 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
 
     Activity act;
     ArrayList<CommandItem> list;
+    Clicked clicked;
 
-    public CommandListAdapter(Activity act, ArrayList<CommandItem> list) {
+    public CommandListAdapter(Activity act, ArrayList<CommandItem> list,Clicked clicked) {
         this.act = act;
         this.list = list;
+        this.clicked = clicked;
+    }
+
+    public interface Clicked {
+        void clicked();
     }
 
     @NonNull
@@ -94,8 +100,18 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
                 @Override
                 public void onClick(View v) {
                     if (UserPref.getSubscribeState(act).equalsIgnoreCase("N")) {
-//                        checkPay(list.get(getAdapterPosition()));
-                        getMypoint(list.get(position));
+                        MyUtil.showAlert(act, "명령하기", "명령 실행시 뼈다귀 1개가 차감됩니다. (소진된 뼈다귀는 10분에 1개씩 자동충전됩니다.)", new MyUtil.OnAlertAfter() {
+                            @Override
+                            public void onAfterOk() {
+                                pointMinus(list.get(position));
+//                        getMypoint(list.get(position));
+                            }
+
+                            @Override
+                            public void onAfterCancel() {
+
+                            }
+                        });
                     } else {
                         Intent play = new Intent(act, DlgCommandPlay.class);
                         play.putExtra("command", list.get(position));
@@ -201,12 +217,55 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
         myPoint.execute(true, false);
     }
 
+    private void pointMinus(final CommandItem item){
+        ReqBasic pointMinus = new ReqBasic(act, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+//                {"result":"N","message":"포인트가 부족합니다.","url":"","point":""}
+                Log.d(MyUtil.TAG, "pointMinus: "+resultData.getResult());
+
+                if (resultData.getResult() != null) {
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+                            clicked.clicked();
+
+                            Intent play = new Intent(act, DlgCommandPlay.class);
+                            play.putExtra("command", item);
+                            act.startActivity(play);
+                        } else {
+                            Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                            act.startActivity(new Intent(act, DlgPayment.class));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        pointMinus.addParams("CONNECTCODE","APP");
+        pointMinus.addParams("siteUrl",NetUrls.MEDIADOMAIN);
+        pointMinus.addParams("_APP_MEM_IDX", UserPref.getIdx(act));
+        pointMinus.addParams("dbControl","setPointMinus");
+        pointMinus.addParams("MEMCODE", UserPref.getIdx(act));
+        pointMinus.addParams("m_uniq", UserPref.getDeviceId(act));
+        pointMinus.addParams("MINUSP", "1");
+        pointMinus.addParams("MINUS_CONTENTS", "명령하기 뼈다귀 사용");
+        pointMinus.execute(true,true);
+    }
+
     private void checkPay(final CommandItem item) {
         ReqBasic checkPay = new ReqBasic(act, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
 //                {"result":"N","message":"포인트가 부족합니다.","url":"","point":""}
-                Log.d(MyUtil.TAG, "checkPay: " + resultData.getResult());
+                Log.d(MyUtil.TAG, "checkPay (Command): " + resultData.getResult());
 
                 if (resultData.getResult() != null) {
                     try {

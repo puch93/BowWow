@@ -40,7 +40,7 @@ import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 
-public class PermissionAct extends Activity implements View.OnClickListener {
+public class PermissionAct extends BaseAct implements View.OnClickListener {
 
     ActivityPermissionBinding binding;
     DBHelper db = new DBHelper();
@@ -48,8 +48,9 @@ public class PermissionAct extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_permission);
+
+        binding.title.setTypeface(app.tf_bmjua);
 
         binding.btnSubmit.setOnClickListener(this);
 
@@ -69,18 +70,21 @@ public class PermissionAct extends Activity implements View.OnClickListener {
 
             } else {
                 // 권한 허용됨
-                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()){
-                            Log.d(MyUtil.TAG, "getInstanceId failed",task.getException());
-                            return;
-                        }
-                        setUserInfo(task.getResult().getToken());
-                        Log.d(MyUtil.TAG, "getToken: "+task.getResult().getToken());
-                    }
+//                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()){
+//                            Log.d(MyUtil.TAG, "getInstanceId failed",task.getException());
+//                            return;
+//                        }
+//                        setUserInfo(task.getResult().getToken());
+//                        Log.d(MyUtil.TAG, "getToken: "+task.getResult().getToken());
+//                    }
+//
+//                });
 
-                });
+                startActivity(new Intent(this, SplashAct.class));
+                finish();
 
             }
         }

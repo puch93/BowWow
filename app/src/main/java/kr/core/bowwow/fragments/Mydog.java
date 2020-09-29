@@ -143,7 +143,55 @@ public class Mydog extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        getMyPoint();
         getDogInfo();
+    }
+
+
+    private void getMyPoint() {
+        ReqBasic myPoint = new ReqBasic(getActivity(), NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "getMypoint: " + resultData.getResult());
+//                {"result":"Y","message":"성공적으로 등록하였습니다.","url":"", "point":"11"}
+                if (resultData.getResult() != null) {
+
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.has("point")) {
+
+                            if (UserPref.getSubscribeState(getActivity()).equalsIgnoreCase("N")) {
+                                if (MyUtil.isNull(jo.getString("point"))) {
+                                    binding.boneCount.setText("0");
+                                } else {
+                                    binding.boneCount.setText(jo.getString("point"));
+                                }
+                            } else {
+                                binding.boneCount.setText("구독권 이용중");
+                                binding.gae.setVisibility(View.GONE);
+                            }
+                        } else {
+                            binding.boneCount.setText("0");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        myPoint.addParams("CONNECTCODE", "APP");
+        myPoint.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        myPoint.addParams("_APP_MEM_IDX", UserPref.getIdx(getActivity()));
+        myPoint.addParams("dbControl", "getMemberPoint");
+        myPoint.addParams("MEMCODE", UserPref.getIdx(getActivity()));
+        myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
+        myPoint.execute(true, false);
+
     }
 
     private void getDogInfo(){
@@ -179,16 +227,25 @@ public class Mydog extends Fragment implements View.OnClickListener {
 
                             app.myDogImgArray = new ArrayList<>();
                             for (int i = 1; i < 6; i++) {
-                                if(dInfo.has("d_pimg" + i)) {
-                                    if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
-                                        app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
-                                        Log.i(StringUtil.TAG, "data [" + i + "]: " + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                if(i==1) {
+                                    if(dInfo.has("d_pimg")) {
+                                        if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg"))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg"));
+                                            Log.i(StringUtil.TAG, "data [" + i + "]: " + StringUtil.getStr(dInfo, "d_pimg"));
+                                        }
+                                    }
+                                } else {
+                                    if(dInfo.has("d_pimg" + i)) {
+                                        if(!StringUtil.isNull(StringUtil.getStr(dInfo, "d_pimg" + i))) {
+                                            app.myDogImgArray.add(NetUrls.MEDIADOMAIN + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                            Log.i(StringUtil.TAG, "data [" + i + "]: " + StringUtil.getStr(dInfo, "d_pimg" + i));
+                                        }
                                     }
                                 }
                             }
 
 
-                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg2");
+                            app.myDogImg = NetUrls.MEDIADOMAIN + dInfo.getString("d_pimg");
                             app.myDogBreed = dInfo.getString("d_breed");
                             app.myDogGender = dInfo.getString("d_gender");
                             app.myDogBirth = dInfo.getString("d_birth");

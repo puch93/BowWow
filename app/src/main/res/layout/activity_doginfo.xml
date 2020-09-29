@@ -19,6 +19,7 @@
                 android:layout_height="match_parent"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -214,7 +215,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/sel_btn_longbottom"
+                    android:background="@drawable/ripple_red_bottom_btn"
                     android:gravity="center"
                     android:text="작성완료"
                     android:textColor="@color/c_white"

@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import kr.core.bowwow.R;
+import kr.core.bowwow.activity.BaseAct;
 import kr.core.bowwow.app;
 import kr.core.bowwow.customWidget.VisualizerView;
 import kr.core.bowwow.databinding.DlgCommandBinding;
@@ -28,7 +29,7 @@ import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
 
-public class DlgCommandPlay extends Activity implements View.OnClickListener {
+public class DlgCommandPlay extends BaseAct implements View.OnClickListener {
 
     DlgCommandBinding binding;
 
@@ -80,7 +81,7 @@ public class DlgCommandPlay extends Activity implements View.OnClickListener {
             }
         },Visualizer.getMaxCaptureRate() / 2, true, false);
 
-        binding.btnPlaystop.setOnClickListener(this);
+        binding.btnPlayBack.setOnClickListener(this);
 
         binding.tvCommandName.setText(data.getItemname());
 
@@ -208,7 +209,7 @@ public class DlgCommandPlay extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_playstop:
+            case R.id.btn_play_back:
                 // 결제 제거
                 playControl();
 

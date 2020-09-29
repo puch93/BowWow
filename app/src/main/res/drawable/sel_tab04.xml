@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/pettranslate_btn_menu04_191125" android:state_selected="false"/>
-    <item android:drawable="@drawable/pettranslate_btn_menu04_on_191125" android:state_selected="true"/>
+    <item android:drawable="@drawable/btn_menu_04" android:state_selected="false"/>
+    <item android:drawable="@drawable/btn_menu_04_on" android:state_selected="true"/>
 
 </selector>
