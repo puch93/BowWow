@@ -316,6 +316,14 @@ public class LayoutWebView extends BaseAct implements View.OnClickListener {
         server.addParams("site", "7");
         server.addParams("fcm", UserPref.getFcm(act));
         server.addParams("m_idx", MyUtil.getDeviceId(act));
+
+        server.addParams("idx", UserPref.getIdx(act));
+        server.addParams("m_uniq", MyUtil.getDeviceId(act));
+        server.addParams("m_hp", MyUtil.getPhoneNumber(act));
+        server.addParams("m_model", Build.MODEL);
+        server.addParams("m_agent", MyUtil.getTelecom(act));
+
+
         server.execute(true, false);
     }
 }

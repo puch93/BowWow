@@ -80,6 +80,8 @@ public class SplashAct extends BaseAct {
     private static final int OVERLAY = 1003;
     TextView version_text;
 
+    String dog_code = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,7 +160,7 @@ public class SplashAct extends BaseAct {
                         if (isReady && isPurchaseStateReady && !MyUtil.isNull(fcm_token)) {
                             isReady = false;
                             Log.i(StringUtil.TAG, "run: ");
-                            preSetting();
+                            setUserInfo();
                             timer.cancel();
                         }
 
@@ -260,7 +262,7 @@ public class SplashAct extends BaseAct {
     private void preSetting() {
         Log.i(StringUtil.TAG, "preSetting: ");
         if (!StringUtil.isNull(UserPref.getFCheck(act))) {
-            setUserInfo();
+            lastProcess();
         } else {
             String h = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date(System.currentTimeMillis()));
             if (h == "23") {
@@ -283,11 +285,8 @@ public class SplashAct extends BaseAct {
 
                         if (StringUtil.getStr(jo, "result").equalsIgnoreCase("Y")) {
                             UserPref.setFCheck(act, checkTime);
-                            setUserInfo();
-                        } else {
-                            setUserInfo();
                         }
-
+                        lastProcess();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -301,6 +300,12 @@ public class SplashAct extends BaseAct {
         server.addParams("site", "7");
         server.addParams("fcm", fcm_token);
         server.addParams("m_idx", MyUtil.getDeviceId(act));
+
+        server.addParams("idx", UserPref.getIdx(act));
+        server.addParams("m_uniq", MyUtil.getDeviceId(act));
+        server.addParams("m_hp", MyUtil.getPhoneNumber(act));
+        server.addParams("m_model", Build.MODEL);
+        server.addParams("m_agent", MyUtil.getTelecom(act));
         server.execute(true, false);
     }
 
@@ -399,6 +404,21 @@ public class SplashAct extends BaseAct {
         checkVer.execute(true, true);
     }
 
+    private void lastProcess() {
+        if (MyUtil.isNull(dog_code)) {
+            startActivity(new Intent(SplashAct.this, DogInfoAct.class));
+        } else {
+            if (Integer.parseInt(dog_code) > 0) {
+                UserPref.setDogIdx(SplashAct.this, dog_code);
+                getTalkList();
+                startActivity(new Intent(SplashAct.this, MainActivity.class));
+            } else {
+                startActivity(new Intent(SplashAct.this, DogInfoAct.class));
+            }
+        }
+        finish();
+    }
+
     private void setUserInfo() {
         Log.i(StringUtil.TAG, "setUserInfo: ");
         String cellnum;
@@ -418,18 +438,10 @@ public class SplashAct extends BaseAct {
                         if (jo.getString("result").equalsIgnoreCase("Y")) {
                             UserPref.setIdx(SplashAct.this, jo.getString("MEMCODE"));
 
-                            if (MyUtil.isNull(jo.getString("DOGCODE"))) {
-                                startActivity(new Intent(SplashAct.this, DogInfoAct.class));
-                            } else {
-                                if (Integer.parseInt(jo.getString("DOGCODE")) > 0) {
-                                    UserPref.setDogIdx(SplashAct.this, jo.getString("DOGCODE"));
-                                    getTalkList();
-                                    startActivity(new Intent(SplashAct.this, MainActivity.class));
-                                } else {
-                                    startActivity(new Intent(SplashAct.this, DogInfoAct.class));
-                                }
-                            }
-                            finish();
+                            dog_code = jo.getString("DOGCODE");
+
+                            preSetting();
+
                         } else {
                             Toast.makeText(SplashAct.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
                         }

@@ -323,6 +323,7 @@ public class DlgDogTrans extends BaseAct {
 //                                movetab.putExtra("detect", "y");
 //                                startActivity(movetab);
                                 app.isTrans = false;
+                                setResult(RESULT_OK);
                                 finish();
 
                             }

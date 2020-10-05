@@ -290,6 +290,7 @@ public class DlgPersonTrans extends BaseAct {
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
+                                        setResult(RESULT_OK);
                                         app.isTrans = false;
                                         finish();
                                     }

@@ -389,6 +389,25 @@ public class MyUtil {
         return false;
     }
 
+    // get phone num
+    public static String getPhoneNumber(Activity act) {
+        TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNum = tm.getLine1Number();
+        if (StringUtil.isNull(phoneNum)) {
+            return null;
+        } else {
+            if (phoneNum.startsWith("+82")) {
+                phoneNum = phoneNum.replace("+82", "0");
+            }
+            return phoneNum;
+        }
+    }
+
+    public static String getTelecom(Context ctx) {
+        TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getNetworkOperatorName();
+    }
+
 
     /**
      * @param str 입력 String

@@ -532,4 +532,116 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
     }
 
+
+    public void startAudio(int position) {
+        Log.d(MyUtil.TAG, "startAudio: " + position);
+        currPos = position;
+
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
+
+        if (prePos != -1) {
+            if (prePos != position) {
+                if (list.get(prePos).isSelected()) {
+                    list.get(prePos).setSelected(false);
+                    if (list.get(prePos).isPlay()) {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                        mVisualizer.setEnabled(false);
+                        list.get(prePos).setPlay(false);
+                    }
+                    notifyItemChanged(prePos, list.get(prePos).isSelected());
+                }
+            }
+        }
+        list.get(position).setSelected(!list.get(position).isSelected());
+        notifyItemChanged(position, list.get(position).isSelected());
+        if (list.get(position).isSelected()) {
+            app.isTrans = true;
+
+            try {
+                mediaPlayer.setDataSource(list.get(position).getT_sound());
+                mediaPlayer.prepare();      // 오류
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+//                        drawview.addView(mVisualizerView);
+
+            mVisualizer = new Visualizer(mediaPlayer.getAudioSessionId());
+            mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+
+            mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
+                @Override
+                public void onWaveFormDataCapture(Visualizer visualizer, final byte[] bytes, int i) {
+                    if (mVisualizer.getEnabled()) {
+//                                    mVisualizerView.updateVisualizer(bytes);
+                        list.get(currPos).setBytes(bytes);
+                        notifyItemChanged(currPos, list.get(currPos).getBytes());
+                    }
+                }
+
+                @Override
+                public void onFftDataCapture(Visualizer visualizer, byte[] bytes, int i) {
+                }
+            }, Visualizer.getMaxCaptureRate() / 2, true, false);
+            mVisualizer.setEnabled(true);
+
+            mediaPlayer.start();
+            list.get(currPos).setCurrTime(MyUtil.getTime(String.valueOf(0)));
+            list.get(position).setPlay(true);
+
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    list.get(currPos).setSelected(false);
+                    mediaPlayer.reset();
+                    if (mVisualizer != null) {
+                        mVisualizer.setEnabled(false);
+                    }
+                    app.isTrans = false;
+                }
+            });
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mediaPlayer.isPlaying()) {
+                        while (!Thread.currentThread().isInterrupted()) {
+//                                    Log.d(MyUtil.TAG, "playtime: "+mediaPlayer.getDuration() + " / " + mediaPlayer.getCurrentPosition());
+
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (mediaPlayer != null) {
+                                list.get(currPos).setCurrTime(MyUtil.getTime(String.valueOf(mediaPlayer.getCurrentPosition())));
+                                act.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        notifyItemChanged(currPos, list.get(currPos).getCurrTime());
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+                }
+            }).start();
+
+        } else {
+//                        app.isTrans = false;
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mVisualizer.setEnabled(false);
+            Thread.currentThread().interrupt();
+            list.get(position).setPlay(false);
+            app.isTrans = false;
+        }
+        prePos = position;
+    }
 }

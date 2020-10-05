@@ -65,6 +65,8 @@ import kr.core.bowwow.utils.LayoutWebView;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Chatting extends Fragment implements View.OnClickListener {
     Activity act;
     FragChattingBinding binding;
@@ -175,6 +177,10 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
         setKeyboardVisibilityListener();
 
+
+        adapter.setList(app.chatItems);
+        binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
+
         return binding.getRoot();
     }
 
@@ -213,8 +219,6 @@ public class Chatting extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         getMyPoint();
-        adapter.setList(app.chatItems);
-        binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
 //        adapter.notifyDataSetChanged();
     }
 
@@ -277,7 +281,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
             Intent dogTrans = new Intent(act, DlgDogTrans.class);
             dogTrans.putExtra("path", filePath);
             dogTrans.putExtra("td_run_time", String.valueOf(mp.getDuration()));
-            startActivity(dogTrans);
+            startActivityForResult(dogTrans, 101);
         }
 
         app.isTrans = false;
@@ -297,6 +301,22 @@ public class Chatting extends Fragment implements View.OnClickListener {
 //                mp.reset();
 //            }
 //        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == 101) {
+                adapter.setList(app.chatItems);
+                binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
+                adapter.startAudio(app.chatItems.size()-1);
+            } else if(requestCode == 102) {
+                adapter.setList(app.chatItems);
+                binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
+                adapter.startAudio(app.chatItems.size()-1);
+            }
+        }
     }
 
     private void setClickListener() {
@@ -486,7 +506,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
                     } else {
                         Intent pmsg = new Intent(act, DlgPersonTrans.class);
                         pmsg.putExtra("pmsg", binding.etMsg.getText().toString());
-                        startActivity(pmsg);
+                        startActivityForResult(pmsg, 102);
                         binding.etMsg.setText(null);
                     }
 //                    }
@@ -510,7 +530,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
                         if (jo.getString("result").equalsIgnoreCase("Y")) {
                             Intent pmsg = new Intent(act, DlgPersonTrans.class);
                             pmsg.putExtra("pmsg", contents);
-                            startActivity(pmsg);
+                            startActivityForResult(pmsg, 102);
                             binding.etMsg.setText(null);
 
                             getMyPoint();
@@ -553,7 +573,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
                         if (jo.getString("result").equalsIgnoreCase("Y")) {
                             Intent pmsg = new Intent(act, DlgPersonTrans.class);
                             pmsg.putExtra("pmsg", contents);
-                            startActivity(pmsg);
+                            startActivityForResult(pmsg, 102);
                             binding.etMsg.setText(null);
 
                             getMyPoint();
