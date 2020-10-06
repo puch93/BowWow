@@ -123,11 +123,6 @@ public class SplashAct extends BaseAct {
                 checkVer();
             }
         }, 1500);
-
-        /* check coupa alarm */
-        if (StringUtil.isNull(UserPref.getAlarmCoupa(act))) {
-            alarmSetting();
-        }
     }
 
     private void getFcmToken() {
@@ -439,6 +434,11 @@ public class SplashAct extends BaseAct {
                             UserPref.setIdx(SplashAct.this, jo.getString("MEMCODE"));
 
                             dog_code = jo.getString("DOGCODE");
+
+                            /* check coupa alarm */
+                            if (StringUtil.isNull(UserPref.getAlarmCoupa(act))) {
+                                alarmSetting();
+                            }
 
                             preSetting();
 
