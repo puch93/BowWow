@@ -8,7 +8,7 @@
     <!--    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>-->
     <!--    <string name="banner_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
 
-    <string name="permi_phone">회원가입 간소화와 사용자를 고유 식별하기 위해 사용자의 전화번호와 기기아이디를 수집하며, 인앱결제내역 관리등을 위해 필요합니다.</string>
+    <string name="permi_phone">회원가입 간소화 및 알림톡 전송, 사용자 고유 식별을 위해 사용자의 전화번호와 기기아이디를 수집하며, 인앱결제내역 관리등을 위해 필요합니다.</string>
     <string name="permi_storage">반려견 프로필 이미지 지정을 위한 내부 저장소 접근과 저장에 필요합니다.</string>
     <string name="permi_mic">소리 감지를 위해 필요합니다.</string>
 

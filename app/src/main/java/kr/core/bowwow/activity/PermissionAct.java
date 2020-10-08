@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +55,13 @@ public class PermissionAct extends BaseAct implements View.OnClickListener {
 
         binding.btnSubmit.setOnClickListener(this);
 
+        binding.tvPersonal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://bowwow.alrigo.co.kr/term.siso"));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

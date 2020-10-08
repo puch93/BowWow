@@ -19,8 +19,8 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="접근권한 허용"
                 android:includeFontPadding="false"
+                android:text="접근권한 허용"
                 android:textColor="#f44c46"
                 android:textSize="23dp"
                 android:textStyle="bold"
@@ -41,9 +41,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#DCDCDC"
+                android:orientation="vertical"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:orientation="vertical">
+                android:paddingBottom="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -54,9 +54,9 @@
                     android:textSize="@dimen/middle_text" />
 
                 <LinearLayout
-                    android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -70,10 +70,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:text="권한 허용"
                         android:textColor="@color/c_mainred"
-                        android:textSize="@dimen/middle_text" />
+                        android:textSize="@dimen/middle_text"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -91,21 +91,21 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginTop="40dp"
+                android:orientation="vertical"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:orientation="vertical">
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="필수 접근 권한"
                     android:layout_marginLeft="1dp"
                     android:layout_marginRight="1dp"
-                    android:textStyle="bold"
+                    android:background="@drawable/pettranslate_bg_pop_backtopcolor_191125"
+                    android:gravity="center"
+                    android:text="필수 접근 권한"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/middle_text"
-                    android:background="@drawable/pettranslate_bg_pop_backtopcolor_191125"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -116,93 +116,106 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
-                            android:textStyle="bold"
-                            android:includeFontPadding="false"
                             android:layout_marginRight="8dp"
+                            android:includeFontPadding="false"
+                            android:text="전화번호"
                             android:textColor="@color/c_black15"
-                            android:text="전화번호"/>
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
+                            android:text="@string/permi_phone"
                             android:textColor="@color/c_nortext"
-                            android:text="@string/permi_phone"/>
+                            android:textSize="@dimen/middle_text" />
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:background="#dcdcdc"
                         android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:background="#dcdcdc"/>
+                        android:paddingRight="12dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
-                            android:textStyle="bold"
                             android:layout_marginRight="8dp"
                             android:includeFontPadding="false"
+                            android:text="저장공간"
                             android:textColor="@color/c_black15"
-                            android:text="저장공간"/>
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
+                            android:text="@string/permi_storage"
                             android:textColor="@color/c_nortext"
-                            android:text="@string/permi_storage"/>
+                            android:textSize="@dimen/middle_text" />
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:background="#dcdcdc"
                         android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:background="#dcdcdc"/>
+                        android:paddingRight="12dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
-                            android:textStyle="bold"
                             android:layout_marginRight="8dp"
                             android:includeFontPadding="false"
+                            android:text="마이크"
                             android:textColor="@color/c_black15"
-                            android:text="마이크"/>
+                            android:textSize="@dimen/middle_text"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/middle_text"
+                            android:text="@string/permi_mic"
                             android:textColor="@color/c_nortext"
-                            android:text="@string/permi_mic"/>
+                            android:textSize="@dimen/middle_text" />
 
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_personal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/sel_permission"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="개인정보 처리방침 보기"
+                    android:textColor="#3b3a39"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/btn_submit"
