@@ -155,11 +155,13 @@ public class MyUtil {
             //실제
             UserPref.setDeviceId(ctx,newId);
             //테스트
-//            UserPref.setDeviceId(ctx, "355325072241290");
+//            UserPref.setDeviceId(ctx, "355325072212341");
         }
 
         // 실제
         return newId;
+        // 테스트
+//        return "355325072212341";
     }
 
     public static boolean isNull(String str) {

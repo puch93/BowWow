@@ -470,7 +470,6 @@ public class SplashAct extends BaseAct {
 //        login.addParams("subscription",subState);
 //        login.addParams("m_device_model",Build.MODEL);
 
-
         login.addParams("m_uniq", MyUtil.getDeviceId(this));
 
         TelephonyManager tManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);

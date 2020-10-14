@@ -29,7 +29,6 @@ import com.musicg.wave.extension.Spectrogram;
  * Api for detecting different sounds
  *
  * @author Jacquet Wong
- *
  */
 public class DetectionApiTest {
 
@@ -57,15 +56,14 @@ public class DetectionApiTest {
     /**
      * Initiate the settings for specific sound detection
      */
-    protected void init(){
+    protected void init() {
         // do nothing, needed to be overrided
     }
 
     /**
      * Determine the audio bytes contains a specific sound or not
      *
-     * @param audioBytes
-     *            input audio byte
+     * @param audioBytes input audio byte
      * @return
      */
     public boolean isSpecificSound(byte[] audioBytes) {
@@ -86,7 +84,7 @@ public class DetectionApiTest {
             upperBoundary = (int) (lowPass / unitFrequency);
             // end set boundary
 
-            Wave wave = new Wave(waveHeader, audioBytes);	// audio bytes of this frame
+            Wave wave = new Wave(waveHeader, audioBytes);    // audio bytes of this frame
             short[] amplitudes = wave.getSampleAmplitudes();
 
             // spectrum for the clip
@@ -105,10 +103,10 @@ public class DetectionApiTest {
             Log.i(StringUtil.TAG, "-------------------------------------------");
             Log.i(StringUtil.TAG, "frequencyUnitRange: " + frequencyUnitRange);
             if (frequencyUnitRange <= spectrum.length) {
-                if (isPassedIntensity(spectrum)){
-                    if (isPassedStandardDeviation(spectrogramData)){
-                        if (isPassedZeroCrossingRate(amplitudes)){
-                            if (isPassedFrequency(rangedSpectrum)){
+                if (isPassedIntensity(spectrum)) {
+                    if (isPassedStandardDeviation(spectrogramData)) {
+                        if (isPassedZeroCrossingRate(amplitudes)) {
+                            if (isPassedFrequency(rangedSpectrum)) {
                                 Log.i(StringUtil.TAG, "result: true");
                                 return true;
                             } else {
@@ -153,7 +151,7 @@ public class DetectionApiTest {
         double maxAmp = Double.MIN_VALUE;
         double minAmp = Double.MAX_VALUE;
         for (int i = 0; i < spectrogramData.length; i++) {
-            for (int j = 0; j < spectrogramData[i].length; j++){
+            for (int j = 0; j < spectrogramData[i].length; j++) {
                 if (spectrogramData[i][j] > maxAmp) {
                     maxAmp = spectrogramData[i][j];
                 } else if (spectrogramData[i][j] < minAmp) {
@@ -183,7 +181,7 @@ public class DetectionApiTest {
         // end normalization
     }
 
-    protected boolean isPassedStandardDeviation(double[][] spectrogramData){
+    protected boolean isPassedStandardDeviation(double[][] spectrogramData) {
 
         // normalize the spectrogramData (with all frames in the spectrogram)
         normalizeSpectrogramData(spectrogramData);
@@ -220,7 +218,7 @@ public class DetectionApiTest {
         return result;
     }
 
-    protected boolean isPassedFrequency(double[] spectrum){
+    protected boolean isPassedFrequency(double[] spectrum) {
         // find the robust frequency
         ArrayRankDouble arrayRankDouble = new ArrayRankDouble();
         double robustFrequency = arrayRankDouble.getMaxValueIndex(spectrum) * unitFrequency;
@@ -233,7 +231,7 @@ public class DetectionApiTest {
         return result;
     }
 
-    protected boolean isPassedIntensity(double[] spectrum){
+    protected boolean isPassedIntensity(double[] spectrum) {
         // get the average intensity of the signal
         double intensity = 0;
         for (int i = 0; i < spectrum.length; i++) {
@@ -251,7 +249,7 @@ public class DetectionApiTest {
         return result;
     }
 
-    protected boolean isPassedZeroCrossingRate(short[] amplitudes){
+    protected boolean isPassedZeroCrossingRate(short[] amplitudes) {
         ZeroCrossingRate zcr = new ZeroCrossingRate(amplitudes, 1);
         int numZeroCrosses = (int) zcr.evaluate();
 

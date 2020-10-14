@@ -58,7 +58,7 @@ public class PermissionAct extends BaseAct implements View.OnClickListener {
         binding.tvPersonal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://bowwow.alrigo.co.kr/term.siso"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://bowwow.alrigo.co.kr/term.php"));
                 startActivity(intent);
             }
         });

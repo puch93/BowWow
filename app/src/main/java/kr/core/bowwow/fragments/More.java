@@ -77,8 +77,6 @@ public class More extends Fragment implements View.OnClickListener {
             }
         });
 
-        setBanner();
-
         getMypoint();
 
         getCoupaBanner();
@@ -163,50 +161,6 @@ public class More extends Fragment implements View.OnClickListener {
         myPoint.addParams("m_uniq", UserPref.getDeviceId(getActivity()));
         myPoint.execute(true, false);
 
-    }
-
-    private void setBanner() {
-        if (MyUtil.isNull(app.bannerState)) {
-            binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-            binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-            // admob 설정
-
-            binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-//            binding.bannerArea.getRoot().setVisibility(View.GONE);
-        } else {
-            switch (app.bannerState) {
-                case MyUtil.BANNER:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.GONE);
-                    binding.bannerArea.bannerCore.setVisibility(View.VISIBLE);
-
-                    // 이미지 세팅
-                    Glide.with(this)
-                            .load(app.bannerImg)
-                            .into(binding.bannerArea.bannerCore);
-                    binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (MyUtil.isNull(app.bannerLink)) {
-                                Toast.makeText(getContext(), "연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.bannerLink)));
-                            }
-                        }
-                    });
-                    break;
-
-                case MyUtil.ADMOB:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-                    // admob 설정
-                    binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-                    break;
-                case MyUtil.NONE:
-                    binding.bannerArea.getRoot().setVisibility(View.GONE);
-                    break;
-            }
-        }
     }
 
     private void getCoupaBanner() {

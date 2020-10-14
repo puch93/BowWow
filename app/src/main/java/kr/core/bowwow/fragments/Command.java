@@ -97,7 +97,7 @@ public class Command extends Fragment {
         binding.rcvCmdlist.addItemDecoration(new AllOfDecoration(act, "command"));
 
         setCommandList();
-        setBanner();
+        getCoupaBanner();
 
         binding.mydogModify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,51 +249,6 @@ public class Command extends Fragment {
         commandList.execute(true, true);
     }
 
-    private void setBanner() {
-        if (MyUtil.isNull(app.bannerState)) {
-            binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-            binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-            // admob 설정
-            binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-//            binding.bannerArea.getRoot().setVisibility(View.GONE);
-        } else {
-            switch (app.bannerState) {
-                case MyUtil.BANNER:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.GONE);
-                    binding.bannerArea.bannerCore.setVisibility(View.VISIBLE);
-
-                    // 이미지 세팅
-//                    Glide.with(this)
-//                            .load(app.bannerImg)
-//                            .into(binding.bannerArea.bannerCore);
-//                    binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            if (MyUtil.isNull(app.bannerLink)) {
-//                                Toast.makeText(getContext(), "연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.bannerLink)));
-//                            }
-//                        }
-//                    });
-                    getCoupaBanner();
-
-
-                    break;
-                case MyUtil.ADMOB:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-                    // admob 설정
-                    binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-                    break;
-                case MyUtil.NONE:
-                    binding.bannerArea.getRoot().setVisibility(View.GONE);
-                    break;
-            }
-        }
-    }
-
     private void getCoupaBanner() {
         ReqBasic server = new ReqBasic(act, "https://coupang.adamstore.co.kr/lib/control.siso") {
             @Override
@@ -312,32 +267,54 @@ public class Command extends Fragment {
                                         JSONObject job = jo.getJSONObject("data");
 
                                         String coupang_url = StringUtil.getStr(job, "coupang_url");
-                                        String banner = StringUtil.getStr(job, "banner");
+                                        final String banner = StringUtil.getStr(job, "banner");
 
                                         Log.i("TEST_HOME", "coupang_url: " + coupang_url);
                                         Log.i("TEST_HOME", "banner: " + banner);
 
-
-                                        Glide.with(act).load(banner).into(binding.bannerArea.bannerCore);
-                                        binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
+                                        act.runOnUiThread(new Runnable() {
                                             @Override
-                                            public void onClick(View v) {
-                                                Intent intent = new Intent(act, LayoutWebView.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
+                                            public void run() {
+                                                binding.bannerCore.setVisibility(View.VISIBLE);
+                                                Glide.with(act).load(banner).into(binding.bannerCore);
+                                                binding.bannerCore.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        Intent intent = new Intent(act, LayoutWebView.class);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(intent);
+                                                    }
+                                                });
                                             }
                                         });
                                     } else {
-
+                                        act.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                binding.bannerCore.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    act.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            binding.bannerCore.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
                             }
                         });
                     }
                 } else {
+                    act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.bannerCore.setVisibility(View.GONE);
+                        }
+                    });
                 }
             }
         };

@@ -8,9 +8,10 @@
     <dimen name="xxsmall_text">12dp</dimen>
     <dimen name="xsmall_text">10dp</dimen>
     <dimen name="dimen_8">8dp</dimen>
-    <dimen name="dimen_16">20dp</dimen>
+    <dimen name="dimen_20">20dp</dimen>
     <dimen name="dimen_32">32dp</dimen>
     <dimen name="dimen_40">40dp</dimen>
     <dimen name="dimen_109">109dp</dimen>
     <dimen name="dimen_117">117dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
 </resources>

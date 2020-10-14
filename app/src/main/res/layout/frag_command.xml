@@ -28,9 +28,15 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
+                    android:layout_width="25dp"
+                        android:layout_height="25dp"
                     android:src="@drawable/icon_bone" />
+
+                <ImageView
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/icon_x" />
 
                 <TextView
                     android:id="@+id/bone_count"
@@ -89,17 +95,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/banner_core"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include
-                android:id="@+id/banner_area"
-                layout="@layout/banner_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </FrameLayout>
+            android:layout_height="55dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_cmdlist"

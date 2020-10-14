@@ -27,9 +27,15 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
+                    android:layout_width="25dp"
+                        android:layout_height="25dp"
                     android:src="@drawable/icon_bone" />
+
+                <ImageView
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/icon_x" />
 
                 <TextView
                     android:id="@+id/bone_count"
@@ -249,19 +255,6 @@
                 <!--                    android:layout_height="wrap_content"-->
                 <!--                    android:adjustViewBounds="true"/>-->
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
-
-                    <include
-                        android:id="@+id/banner_area"
-                        layout="@layout/banner_layout2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

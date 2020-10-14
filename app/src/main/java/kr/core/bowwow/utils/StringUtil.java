@@ -22,6 +22,7 @@ import java.util.TimeZone;
 
 public class StringUtil {
     public static final String TAG = "TEST_HOME";
+    public static final String TAG_BARK = "TEST_BARK";
     public static final String TAG_PUSH = "TEST_HOME";
 
     public static final String CID_POPULAR = "10071";

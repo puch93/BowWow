@@ -115,8 +115,6 @@ public class DetectorThread extends Thread {
     }
 
     public void run() {
-        Log.i(StringUtil.TAG, "run() 호출 ");
-//        detectTime = System.currentTimeMillis() - 2000;
         try {
             byte[] buffer;
             initBuffer();
@@ -130,55 +128,45 @@ public class DetectorThread extends Thread {
                 if (buffer != null) {
                     // sound detected
                     // whistle detection
-                    //System.out.println("*Whistle:");
-//					boolean isWhistle = whistleApi.isWhistle(buffer);
+
+                    // 짖었는지 여부
                     boolean isBark = barkApi.isBark(buffer);
 
                     if (!app.isTrans) {
-                        Log.i(StringUtil.TAG, "app.isTrans false: ");
                         if (whistleResultList.getFirst()) {
                             numWhistles--;
-                            Log.d(MyUtil.TAG, "numWhistles minus: " + numWhistles);
                         }
 
                         whistleResultList.removeFirst();
                         whistleResultList.add(isBark);
-//						whistleResultList.add(isBarkC4t1);
 
                         if (isBark) {
                             numWhistles++;
-                            Log.d(MyUtil.TAG, "numWhistles: " + numWhistles);
+                            Log.i(StringUtil.TAG_BARK, "numWhistles: " + numWhistles);
                         }
                     }
 
                     if (numWhistles >= whistlePassScore) {
-                        Log.i(StringUtil.TAG, "numWhistles >= whistlePassScore");
                         // clear buffer
                         initBuffer();
-//						onBarkDetected(buffer);
                         if (detectTime == 0) {
-                            detectTime = System.currentTimeMillis()-500;
+                            detectTime = System.currentTimeMillis();
                         }
 
                         File dir = new File(Environment.getExternalStorageDirectory() + "/bowwow/");
                         dir.mkdirs();
 
-//						String filename = System.currentTimeMillis() + "test.wav";
                         if (waveFile == null) {
-//							waveFile = new File(Environment.getExternalStorageDirectory() + "/bowwow/" + filename);
                             waveFile = new File(Environment.getExternalStorageDirectory() + "/bowwow/upFile.wav");
                         }
-
                         if (tempFile == null) {
                             tempFile = new File(Environment.getExternalStorageDirectory() + "/bowwow/test_temp.bak");
                         }
-
-//                        app.isTrans = true;
                     }
 
 
                     if (detectTime > 0) {
-                        Log.i(StringUtil.TAG, "detectTime > 0");
+                        Log.i(StringUtil.TAG_BARK, "detectTime > 0");
                         try {
                             if (bos == null) {
                                 bos = new BufferedOutputStream(new FileOutputStream(tempFile));
@@ -194,15 +182,12 @@ public class DetectorThread extends Thread {
 
                     long time = System.currentTimeMillis();
                     if (detectTime != 0) {
-                        Log.i(StringUtil.TAG, "detectTime != 0");
-//                        Log.i(StringUtil.TAG, "time: " + time + ", detectTime: " + detectTime);
-                        Log.i(StringUtil.TAG, "time - detectTime: " + (time - detectTime));
+                        Log.i(StringUtil.TAG_BARK, "time - detectTime: " + (time - detectTime));
                         if (time - detectTime >= 2000) {
-                            Log.i(StringUtil.TAG, "time - detectTime >= 1000");
+                            Log.i(StringUtil.TAG_BARK, "time - detectTime >= 2000");
                             bos.close();
 
                             int read = 0;
-
                             byte[] bu = new byte[buffer.length];
 
                             bis = new BufferedInputStream(new FileInputStream(tempFile));

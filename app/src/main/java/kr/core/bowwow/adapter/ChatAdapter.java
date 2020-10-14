@@ -37,6 +37,7 @@ import kr.core.bowwow.customWidget.VisualizerView;
 import kr.core.bowwow.dto.ChatItem;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
+import kr.core.bowwow.utils.StringUtil;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -576,10 +577,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
                 @Override
                 public void onWaveFormDataCapture(Visualizer visualizer, final byte[] bytes, int i) {
-                    if (mVisualizer.getEnabled()) {
+                    if(list.size() != 0) {
+                        if (mVisualizer.getEnabled()) {
 //                                    mVisualizerView.updateVisualizer(bytes);
-                        list.get(currPos).setBytes(bytes);
-                        notifyItemChanged(currPos, list.get(currPos).getBytes());
+                            list.get(currPos).setBytes(bytes);
+                            notifyItemChanged(currPos, list.get(currPos).getBytes());
+                        }
+                    } else {
+                        Log.i(StringUtil.TAG, "list.size() == 0: ");
                     }
                 }
 

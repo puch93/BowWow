@@ -60,6 +60,7 @@ import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.service.ForegroundService;
+import kr.core.bowwow.utils.AllOfDecoration;
 import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.LayoutWebView;
 import kr.core.bowwow.utils.MyUtil;
@@ -68,7 +69,7 @@ import kr.core.bowwow.utils.StringUtil;
 import static android.app.Activity.RESULT_OK;
 
 public class Chatting extends Fragment implements View.OnClickListener {
-    Activity act;
+    public static Activity act;
     FragChattingBinding binding;
 
     ChatAdapter adapter;
@@ -95,16 +96,19 @@ public class Chatting extends Fragment implements View.OnClickListener {
         act = getActivity();
         binding.title.setTypeface(app.tf_bmjua);
         binding.dogName.setTypeface(app.tf_bmjua);
+        binding.textListening.setTypeface(app.tf_bmjua);
 
         setClickListener();
-        setBanner();
+        getCoupaBanner();
 
 //        getMyPoint();
 
         binding.rcvChat.setLayoutManager(new LinearLayoutManager(act));
+
 //        binding.rcvChat.setHasFixedSize(true);
         adapter = new ChatAdapter(act, app.chatItems);
         binding.rcvChat.setAdapter(adapter);
+        binding.rcvChat.addItemDecoration(new AllOfDecoration(act, "chatting"));
 
 //        getTalkList();
 
@@ -146,6 +150,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
                     case MotionEvent.ACTION_UP:
                         Log.i(StringUtil.TAG, "onTouch: ACTION_UP");
+                        releaseDetectApi();
 
                         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
@@ -157,15 +162,13 @@ public class Chatting extends Fragment implements View.OnClickListener {
                                     }
                                 });
                                 binding.areaListening.setPressed(false);
-                                releaseDetectApi();
                             }
-                        }, 1500);
+                        }, 500);
                         return true;
                 }
                 return false;
             }
         });
-
 
 
         binding.areaListeningAll.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +178,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
             }
         });
 
-        setKeyboardVisibilityListener();
+//        setKeyboardVisibilityListener();
 
 
         adapter.setList(app.chatItems);
@@ -232,7 +235,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
         detectorThread.start();
     }
 
-    private void releaseDetectApi() {
+    public void releaseDetectApi() {
         Log.i(StringUtil.TAG, "releaseDetectApi: ");
         if (recorderThread != null) {
             recorderThread.stopRecording();
@@ -246,7 +249,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
     }
 
     public void detectAni(final String filePath) {
-
+        Log.i(StringUtil.TAG, "detectAni: ");
         app.isTrans = true;
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -282,6 +285,8 @@ public class Chatting extends Fragment implements View.OnClickListener {
             dogTrans.putExtra("path", filePath);
             dogTrans.putExtra("td_run_time", String.valueOf(mp.getDuration()));
             startActivityForResult(dogTrans, 101);
+
+            releaseDetectApi();
         }
 
         app.isTrans = false;
@@ -306,15 +311,15 @@ public class Chatting extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) {
-            if(requestCode == 101) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 101) {
                 adapter.setList(app.chatItems);
                 binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
-                adapter.startAudio(app.chatItems.size()-1);
-            } else if(requestCode == 102) {
+                adapter.startAudio(app.chatItems.size() - 1);
+            } else if (requestCode == 102) {
                 adapter.setList(app.chatItems);
                 binding.rcvChat.scrollToPosition(app.chatItems.size() - 1);
-                adapter.startAudio(app.chatItems.size()-1);
+                adapter.startAudio(app.chatItems.size() - 1);
             }
         }
     }
@@ -324,50 +329,6 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
         binding.btnSearch.setOnClickListener(this);
         binding.btnSerchclose.setOnClickListener(this);
-    }
-
-    private void setBanner() {
-        if (MyUtil.isNull(app.bannerState)) {
-            binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-            binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-            // admob 설정
-
-            binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-//            binding.bannerArea.getRoot().setVisibility(View.GONE);
-        } else {
-            switch (app.bannerState) {
-                case MyUtil.BANNER:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.GONE);
-                    binding.bannerArea.bannerCore.setVisibility(View.VISIBLE);
-
-                    // 이미지 세팅
-//                    Glide.with(this)
-//                            .load(app.bannerImg)
-//                            .into(binding.bannerArea.bannerCore);
-//                    binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            if (MyUtil.isNull(app.bannerLink)) {
-//                                Toast.makeText(getContext(), "연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-//                            }else{
-//                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.bannerLink)));
-//                            }
-//                        }
-//                    });
-                    getCoupaBanner();
-                    break;
-                case MyUtil.ADMOB:
-                    binding.bannerArea.getRoot().setVisibility(View.VISIBLE);
-                    binding.bannerArea.bannerAdmob.setVisibility(View.VISIBLE);
-                    // admob 설정
-                    binding.bannerArea.bannerAdmob.loadAd(app.adRequest);
-                    break;
-                case MyUtil.NONE:
-                    binding.bannerArea.getRoot().setVisibility(View.GONE);
-                    break;
-            }
-        }
     }
 
     private void getCoupaBanner() {
@@ -388,26 +349,50 @@ public class Chatting extends Fragment implements View.OnClickListener {
                                         JSONObject job = jo.getJSONObject("data");
 
                                         String coupang_url = StringUtil.getStr(job, "coupang_url");
-                                        String banner = StringUtil.getStr(job, "banner");
+                                        final String banner = StringUtil.getStr(job, "banner");
 
                                         Log.i("TEST_HOME", "coupang_url: " + coupang_url);
                                         Log.i("TEST_HOME", "banner: " + banner);
 
-
-                                        Glide.with(act).load(banner).into(binding.bannerArea.bannerCore);
-                                        binding.bannerArea.bannerCore.setOnClickListener(new View.OnClickListener() {
+                                        act.runOnUiThread(new Runnable() {
                                             @Override
-                                            public void onClick(View v) {
-                                                Intent intent = new Intent(act, LayoutWebView.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
+                                            public void run() {
+                                                binding.bannerCore.setVisibility(View.VISIBLE);
+                                                Glide.with(act).load(banner).into(binding.bannerCore);
+                                                binding.bannerCore.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        Intent intent = new Intent(act, LayoutWebView.class);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(intent);
+                                                    }
+                                                });
                                             }
                                         });
                                     } else {
+                                        act.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                binding.bannerCore.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    act.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            binding.bannerCore.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
+                            }
+                        });
+                    } else {
+                        act.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.bannerCore.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -516,12 +501,12 @@ public class Chatting extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void pointMinus(final String contents){
+    private void pointMinus(final String contents) {
         ReqBasic pointMinus = new ReqBasic(act, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
 //                {"result":"N","message":"포인트가 부족합니다.","url":"","point":""}
-                Log.d(MyUtil.TAG, "pointMinus: "+resultData.getResult());
+                Log.d(MyUtil.TAG, "pointMinus: " + resultData.getResult());
 
                 if (resultData.getResult() != null) {
                     try {
@@ -549,15 +534,15 @@ public class Chatting extends Fragment implements View.OnClickListener {
             }
         };
 
-        pointMinus.addParams("CONNECTCODE","APP");
-        pointMinus.addParams("siteUrl",NetUrls.MEDIADOMAIN);
+        pointMinus.addParams("CONNECTCODE", "APP");
+        pointMinus.addParams("siteUrl", NetUrls.MEDIADOMAIN);
         pointMinus.addParams("_APP_MEM_IDX", UserPref.getIdx(act));
-        pointMinus.addParams("dbControl","setPointMinus");
+        pointMinus.addParams("dbControl", "setPointMinus");
         pointMinus.addParams("MEMCODE", UserPref.getIdx(act));
         pointMinus.addParams("m_uniq", UserPref.getDeviceId(act));
         pointMinus.addParams("MINUSP", "1");
         pointMinus.addParams("MINUS_CONTENTS", "채팅 사용");
-        pointMinus.execute(true,true);
+        pointMinus.execute(true, true);
     }
 
     private void checkPay(final String contents) {

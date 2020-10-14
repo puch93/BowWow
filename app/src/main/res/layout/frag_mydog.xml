@@ -27,9 +27,15 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
+                    android:layout_width="25dp"
+                        android:layout_height="25dp"
                     android:src="@drawable/icon_bone" />
+
+                <ImageView
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/icon_x" />
 
                 <TextView
                     android:id="@+id/bone_count"
