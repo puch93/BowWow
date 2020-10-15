@@ -19,6 +19,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -98,6 +100,9 @@ public class Chatting extends Fragment implements View.OnClickListener {
         binding.dogName.setTypeface(app.tf_bmjua);
         binding.textListening.setTypeface(app.tf_bmjua);
 
+        Animation startAnimation = AnimationUtils.loadAnimation(act, R.anim.blink_anim);
+        binding.clickBtn.startAnimation(startAnimation);
+
         setClickListener();
         getCoupaBanner();
 
@@ -137,15 +142,26 @@ public class Chatting extends Fragment implements View.OnClickListener {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i(StringUtil.TAG, "onTouch: ACTION_DOWN");
-                        act.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.areaListeningAll.setVisibility(View.VISIBLE);
-                            }
-                        });
-                        binding.areaListening.setPressed(true);
-                        setDetectApi();
+                        if(Integer.parseInt(binding.boneCount.getText().toString()) > 0) {
+                            Log.i(StringUtil.TAG, "onTouch: ACTION_DOWN");
+                            pointMinusDog();
+                            act.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.areaListeningAll.setVisibility(View.VISIBLE);
+                                }
+                            });
+                            binding.areaListening.setPressed(true);
+                            setDetectApi();
+                        } else {
+                            act.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(act, "뼈다귀 개수가 모자랍니다. 충전 후 이용해주세요.", Toast.LENGTH_SHORT).show();
+                                    act.startActivity(new Intent(act, DlgPayment.class));
+                                }
+                            });
+                        }
                         return true;
 
                     case MotionEvent.ACTION_UP:
@@ -499,6 +515,44 @@ public class Chatting extends Fragment implements View.OnClickListener {
 
                 break;
         }
+    }
+
+    private void pointMinusDog() {
+        ReqBasic pointMinus = new ReqBasic(act, NetUrls.DOMAIN) {
+            @Override
+            public void onAfter(int resultCode, HttpResult resultData) {
+                Log.d(MyUtil.TAG, "pointMinus: " + resultData.getResult());
+
+                if (resultData.getResult() != null) {
+                    try {
+                        JSONObject jo = new JSONObject(resultData.getResult());
+
+                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+                            getMyPoint();
+                        } else {
+//                            Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
+//                            act.startActivity(new Intent(act, DlgPayment.class));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(act, act.getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        pointMinus.addParams("CONNECTCODE", "APP");
+        pointMinus.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+        pointMinus.addParams("_APP_MEM_IDX", UserPref.getIdx(act));
+        pointMinus.addParams("dbControl", "setPointMinus");
+        pointMinus.addParams("MEMCODE", UserPref.getIdx(act));
+        pointMinus.addParams("m_uniq", UserPref.getDeviceId(act));
+        pointMinus.addParams("MINUSP", "1");
+        pointMinus.addParams("MINUS_CONTENTS", "채팅 사용");
+        pointMinus.execute(true, false);
     }
 
     private void pointMinus(final String contents) {

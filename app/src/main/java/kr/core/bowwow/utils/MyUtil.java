@@ -127,14 +127,9 @@ public class MyUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             newId = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
         } else {
-            if (isNull(newId)) {
-                if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                    newId = ((TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-                }
-            }
+            newId = ((TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
 
             if (isNull(newId)) {
-
                 newId = "35" +
                         Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
                         Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +

@@ -64,6 +64,7 @@ public class More extends Fragment implements View.OnClickListener {
 
         setClickListener();
 
+        Glide.with(act).load(R.raw.gif_mor_dog).into(binding.gifMorDog);
 
         if (SettingPref.isPushReceive(getActivity())) {
             binding.swChat.setChecked(true);
