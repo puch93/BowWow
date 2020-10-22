@@ -1,6 +1,8 @@
 package kr.core.bowwow.dialogAct;
 
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -9,10 +11,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.billingclient.api.Purchase;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.internal.service.Common;
+import com.onestore.iap.api.IapEnum;
+import com.onestore.iap.api.IapResult;
+import com.onestore.iap.api.PurchaseClient;
+import com.onestore.iap.api.PurchaseData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,9 +28,11 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import kr.core.bowwow.R;
 import kr.core.bowwow.activity.BaseAct;
+import kr.core.bowwow.activity.MainActivity;
 import kr.core.bowwow.app;
 import kr.core.bowwow.billing.BillingManager;
 import kr.core.bowwow.databinding.DlgPaymentBinding;
@@ -31,20 +41,29 @@ import kr.core.bowwow.network.HttpResult;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.MyUtil;
+import kr.core.bowwow.utils.StringUtil;
 
 public class DlgPayment extends BaseAct implements View.OnClickListener {
 
     DlgPaymentBinding binding;
+    Activity act;
 
     String itemname, price;
 
-    BillingManager billingManager;
+    /* one store billing */
+    private static final String SUBS_ID = "subitem";
+    private static final int PURCHASE_REQUEST = 9500;
+    String productType = "auto";
+    PurchaseClient mPurchaseClient;
+    boolean isListenerCalled = false;
+    boolean isPurchaseStateReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding = DataBindingUtil.setContentView(this, R.layout.dlg_payment);
+        act = this;
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -52,7 +71,10 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         getWindow().setAttributes(params);
 
         setClickListener();
-        setBilling();
+
+        mPurchaseClient = new PurchaseClient(act, StringUtil.KEY);
+        mPurchaseClient.connect(mServiceConnectionListener);
+
 
         Glide.with(this)
                 .load(R.raw.order_gif)
@@ -62,8 +84,6 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-                //TODO 제거해야함
-//                sendPurchaseResultTest();
                 finish();
             }
         });
@@ -71,55 +91,309 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
     }
 
 
-    private void sendPurchaseResultTest() {
-        ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
-            @Override
-            public void onAfter(int resultCode, HttpResult resultData) {
-//                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
-                Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
-                if (resultData.getResult() != null) {
+    PurchaseClient.ServiceConnectionListener mServiceConnectionListener = new PurchaseClient.ServiceConnectionListener() {
+        @Override
+        public void onConnected() {
+            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
+            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListener);
+            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "inapp", mQueryPurchaseListenerItem);
+            Log.d("ONE", "Service connected");
+            //2. mBillingSupportedListener < 나도모름 / mQueryPurchaseListener << 구매 내역 들고오기
+        }
 
-                    try {
+        @Override
+        public void onDisconnected() {
+            Log.d("ONE", "Service disconnected");
+        }
 
-                        JSONObject jo = new JSONObject(resultData.getResult());
-                        Toast.makeText(DlgPayment.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
-                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("ONE", "connect onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+            PurchaseClient.launchUpdateOrInstallFlow(act);
+        }
+    };
 
-                        } else {
+    PurchaseClient.BillingSupportedListener mBillingSupportedListener = new PurchaseClient.BillingSupportedListener() {
 
+        @Override
+        public void onSuccess() {
+            Log.d("ONE", "isBillingSupportedAsync onSuccess");
+        }
+
+        @Override
+        public void onError(IapResult result) {
+            Log.e("ONE", "isBillingSupportedAsync onError, " + result.toString());
+        }
+
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("ONE", "isBillingSupportedAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("ONE", "isBillingSupportedAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("ONE", "isBillingSupportedAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+    };
+
+
+    PurchaseClient.QueryPurchaseListener mQueryPurchaseListener = new PurchaseClient.QueryPurchaseListener() {
+        @Override
+        public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
+            isListenerCalled = true;
+
+            Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
+            //구독 판별
+            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
+                //아이템
+            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
+                //구독
+                if (purchaseDataList.size() > 0) {
+                    for (int i = 0; i < purchaseDataList.size(); i++) {
+                        Log.i(StringUtil.TAG, "purchaseDataList.get(" + i + "): " + purchaseDataList.get(i).toString());
+                        if (purchaseDataList.get(i).getRecurringState() == 0) {
+                            //  구독중
+                            UserPref.setSubscribeState(getApplicationContext(), "Y");
+                        } else if (purchaseDataList.get(i).getRecurringState() == 1) {
+                            //  구독 해지중
+                            UserPref.setSubscribeState(getApplicationContext(), "Y");
+
+                        } else if (purchaseDataList.get(i).getRecurringState() == -1) {
+                            //  구독 X
+                            UserPref.setSubscribeState(getApplicationContext(), "N");
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 데이터 형태", Toast.LENGTH_SHORT).show();
                     }
-
-                    finish();
-
-                } else {
-                    Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 값이 없음", Toast.LENGTH_SHORT).show();
                 }
             }
-        };
+        }
 
-        pResult.addParams("CONNECTCODE", "APP");
-        pResult.addParams("siteUrl", NetUrls.MEDIADOMAIN);
-        pResult.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
-        pResult.addParams("MEMCODE", UserPref.getIdx(this));
-        pResult.addParams("dbControl", "setPointINAPPPayment");
-        pResult.addParams("m_uniq", UserPref.getDeviceId(this));
-        pResult.addParams("p_market", "PlayStore");
-        pResult.addParams("p_class", "point");
-        pResult.addParams("p_point", "10");
-        pResult.addParams("price", "3300");
-        pResult.addParams("p_purchase_item_name", "bone10");
-        pResult.addParams("p_purchasetime", String.valueOf(System.currentTimeMillis()));
-        pResult.addParams("p_orderid", "1234");
-        pResult.addParams("p_token", "1234");
-        pResult.addParams("productId", "1234");
-        pResult.addParams("p_pay_data_info", "1234");
-        pResult.execute(true, true);
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+
+        @Override
+        public void onError(IapResult result) {
+            Log.e("one", "queryPurchasesAsync onError, " + result.toString());
+        }
+    };
+
+
+    //4. 결제 완료 리스너
+    PurchaseClient.PurchaseFlowListener mPurchaseFlowListener = new PurchaseClient.PurchaseFlowListener() {
+        @Override
+        public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
+            Log.d("ONE", "launchPurchaseFlowAsync onSuccess, " + purchaseData.toString());
+            // 구매완료 후 developer payload 검증을 수해한다.
+            if (!purchaseData.getDeveloperPayload().equalsIgnoreCase(StringUtil.DEVELOPERPAYLOAD)) {
+                Log.d("ONE", "launchPurchaseFlowAsync onSuccess, Payload is not valid.");
+                return;
+            }
+
+            // 구매완료 후 signature 검증을 수행한다.
+            if (purchaseData.getProductId().equals(SUBS_ID)) {
+                {
+                    Log.i(StringUtil.TAG, "onSuccess: ");
+                    UserPref.setSubscribeState(getApplicationContext(), "Y");
+                    //TODO 여기 결제완료되었으니 서버 업뎃 할것
+//                    sendPurchaseResult(purchaseData, true);
+                }
+            } else {
+                //TODO 여기 결제완료되었으니 서버 업뎃 할것
+//                    sendPurchaseResult(purchaseData, true);
+                Log.d("ONE", "launchPurchaseFlowAsync onSuccess, Signature is not valid.");
+                // 관리형상품(inapp)은 구매 완료 후 소비를 수행한다.
+                mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
+                return;
+            }
+        }
+
+        @Override
+        public void onError(IapResult result) {
+            Log.e("ONE", "launchPurchaseFlowAsync onError, " + result.toString());
+        }
+
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("ONE", "launchPurchaseFlowAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("ONE", "launchPurchaseFlowAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("ONE", "launchPurchaseFlowAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+    };
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case PURCHASE_REQUEST:
+                    /*
+                     * launchPurchaseFlowAsync API 호출 시 전달받은 intent 데이터를 handlePurchaseData를 통하여 응답값을 파싱합니다.
+                     * 파싱 이후 응답 결과를 launchPurchaseFlowAsync 호출 시 넘겨준 PurchaseFlowListener 를 통하여 전달합니다.
+                     */
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (mPurchaseClient.handlePurchaseData(data) == false) {
+                            Log.e("ONE", "onActivityResult handlePurchaseData false ");
+                            // listener is null
+                        }
+                    } else {
+                        Log.e("ONE", "onActivityResult user canceled");
+                        // user canceled , do nothing..
+                    }
+                    break;
+            }
+        }
     }
+
+
+    PurchaseClient.QueryPurchaseListener mQueryPurchaseListenerItem = new PurchaseClient.QueryPurchaseListener() {
+        @Override
+        public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
+
+            Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
+            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
+//구독 판별
+                if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
+                    //아이템
+                    if (purchaseDataList.size() > 0) {
+                        for (int i = 0; i < purchaseDataList.size(); i++) {
+                            PurchaseData purchaseData = purchaseDataList.get(i); // 구매내역조회 및 구매요청 후 전달받은 PurchaseData
+                            mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
+                        }
+                    }
+                }
+            }
+
+            isPurchaseStateReady = true;
+        }
+
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+
+        @Override
+        public void onError(IapResult result) {
+            Log.e("one", "queryPurchasesAsync onError, " + result.toString());
+        }
+    };
+
+
+    PurchaseClient.ConsumeListener mConsumeListener = new PurchaseClient.ConsumeListener() {
+        @Override
+        public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
+            Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
+            // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
+
+//            sendPurchaseResult(purchaseData, false);
+        }
+
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("ONE", "consumeAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("ONE", "consumeAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("ONE", "consumeAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+
+        @Override
+        public void onError(IapResult result) {
+            Log.e("ONE", "consumeAsync onError, " + result.toString());
+        }
+    };
+
+
+//
+//    private void sendPurchaseResultTest() {
+//        ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
+//            @Override
+//            public void onAfter(int resultCode, HttpResult resultData) {
+////                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
+//                Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
+//                if (resultData.getResult() != null) {
+//
+//                    try {
+//
+//                        JSONObject jo = new JSONObject(resultData.getResult());
+//                        Toast.makeText(DlgPayment.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
+//                        if (jo.getString("result").equalsIgnoreCase("Y")) {
+//
+//                        } else {
+//
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 데이터 형태", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    finish();
+//
+//                } else {
+//                    Toast.makeText(DlgPayment.this, getString(R.string.net_errmsg) + "\n문제 : 값이 없음", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        };
+//
+//        pResult.addParams("CONNECTCODE", "APP");
+//        pResult.addParams("siteUrl", NetUrls.MEDIADOMAIN);
+//        pResult.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
+//        pResult.addParams("MEMCODE", UserPref.getIdx(this));
+//        pResult.addParams("dbControl", "setPointINAPPPayment");
+//        pResult.addParams("m_uniq", UserPref.getDeviceId(this));
+//        pResult.addParams("p_market", "PlayStore");
+//        pResult.addParams("p_class", "point");
+//        pResult.addParams("p_point", "10");
+//        pResult.addParams("price", "3300");
+//        pResult.addParams("p_purchase_item_name", "bone10");
+//        pResult.addParams("p_purchasetime", String.valueOf(System.currentTimeMillis()));
+//        pResult.addParams("p_orderid", "1234");
+//        pResult.addParams("p_token", "1234");
+//        pResult.addParams("productId", "1234");
+//        pResult.addParams("p_pay_data_info", "1234");
+//        pResult.execute(true, true);
+//    }
 
     private void setClickListener() {
         binding.llSubitem.setOnClickListener(this);
@@ -135,50 +409,13 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         binding.llBone100.setTag(4);
     }
 
-    private void setBilling() {
-        billingManager = new BillingManager(this, new BillingManager.AfterBilling() {
-            @Override
-            public void sendResult(Purchase purchase, boolean isSubscribe) {
-                // 구독
-//                getSku: subitem
-//                getPurchaseToken: fgbcjedjabinkfnhmohdemhp.AO-J1Oy38ZkQXz94eNAJWJJGNUsW01mqj-JErpX61sSIa9dJWvR1_WpNK8hmjii5Win34z9mNTboYb1w1I6zRxc_ZOlH4gXM3PaoFvksflkNdAcwTKSk2QE
-//                getOrderId: GPA.3373-1236-2126-62189
-//                getPurchaseTime: 1577667498792
-//                getOriginalJson: {"orderId":"GPA.3373-1236-2126-62189","packageName":"kr.core.bowwow","productId":"subitem","purchaseTime":1577667498792,"purchaseState":0,"purchaseToken":"fgbcjedjabinkfnhmohdemhp.AO-J1Oy38ZkQXz94eNAJWJJGNUsW01mqj-JErpX61sSIa9dJWvR1_WpNK8hmjii5Win34z9mNTboYb1w1I6zRxc_ZOlH4gXM3PaoFvksflkNdAcwTKSk2QE","autoRenewing":true,"acknowledged":false}
-
-                // 소모성
-//                getSku: bone10
-//                getPurchaseToken: nchdokkhbcmlpepekmfmgnao.AO-J1OwWkXZ234qt8D3HN78jdTk8JE1Un5EgcJ8To6Zno6sTJg1VqlBPNGHTPfCEvhC0s0_UYmT1HRHOVJF5LhIpE-req9jr2HG-6uVpoLTvEHVk0oaDq_M
-//                getOrderId: GPA.3303-9864-0457-90862
-//                getPurchaseTime: 1577667304962
-//                getOriginalJson: {"orderId":"GPA.3303-9864-0457-90862","packageName":"kr.core.bowwow","productId":"bone10","purchaseTime":1577667304962,"purchaseState":0,"purchaseToken":"nchdokkhbcmlpepekmfmgnao.AO-J1OwWkXZ234qt8D3HN78jdTk8JE1Un5EgcJ8To6Zno6sTJg1VqlBPNGHTPfCEvhC0s0_UYmT1HRHOVJF5LhIpE-req9jr2HG-6uVpoLTvEHVk0oaDq_M","acknowledged":false}
-
-                // 서버로 값 전송(결제 완료)
-                Log.d(MyUtil.TAG, "getSku: " + purchase.getSku());
-                Log.d(MyUtil.TAG, "getPurchaseToken: " + purchase.getPurchaseToken());
-                Log.d(MyUtil.TAG, "getOrderId: " + purchase.getOrderId());
-                Log.d(MyUtil.TAG, "getPurchaseTime: " + purchase.getPurchaseTime());
-                Log.d(MyUtil.TAG, "getOriginalJson: " + purchase.getOriginalJson());
-                sendPurchaseResult(purchase, isSubscribe);
-            }
-
-            @Override
-            public void getSubsriptionState(String subscription, Purchase purchase) {
-
-            }
-        });
-    }
-
-    private void sendPurchaseResult(Purchase p, final boolean isSubscribe) {
+    private void sendPurchaseResult(final com.onestore.iap.api.PurchaseData p, final boolean isSubscribe) {
         ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
             @Override
             public void onAfter(int resultCode, HttpResult resultData) {
-//                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
                 Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
                 if (resultData.getResult() != null) {
-
                     try {
-
                         JSONObject jo = new JSONObject(resultData.getResult());
                         Toast.makeText(DlgPayment.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
                         if (jo.getString("result").equalsIgnoreCase("Y")) {
@@ -208,8 +445,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         pResult.addParams("MEMCODE", UserPref.getIdx(this));
         pResult.addParams("dbControl", "setPointINAPPPayment");
         pResult.addParams("m_uniq", UserPref.getDeviceId(this));
-//        pResult.addParams("MEMCODE", UserPref.getIdx(this));
-        pResult.addParams("p_market", "PlayStore");
+        pResult.addParams("p_market", "One");
 
         if (isSubscribe) {
             pResult.addParams("p_class", "month");
@@ -217,13 +453,8 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
             Calendar c = Calendar.getInstance();
             c.setTime(d);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            Log.d(MyUtil.TAG, "current: "+sdf.format(c.getTime()));
             c.add(Calendar.MONTH, 1);
-//            Log.d(MyUtil.TAG, "plus: "+sdf.format(c.getTime()));
-
-//            pResult.addParams("expire_datetime","");
             pResult.addParams("expire_datetime", sdf.format(c.getTime()));
-
         } else {
             pResult.addParams("p_class", "point");
 
@@ -245,12 +476,26 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
             pResult.addParams("p_point", point);
         }
         pResult.addParams("price", price);
-        pResult.addParams("p_purchase_item_name", p.getSku());
+        pResult.addParams("p_purchase_item_name", p.getProductId());
         pResult.addParams("p_purchasetime", String.valueOf(p.getPurchaseTime()));
         pResult.addParams("p_orderid", p.getOrderId());
-        pResult.addParams("p_token", p.getPurchaseToken());
-        pResult.addParams("productId", p.getSku());
-        pResult.addParams("p_pay_data_info", p.getOriginalJson());
+        pResult.addParams("p_token", p.getSignature());
+        pResult.addParams("productId", p.getProductId());
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("p_orderid", p.getOrderId());
+            jsonObject.put("p_store_type", "OneStore");
+            jsonObject.put("p_purchasetime", String.valueOf(p.getPurchaseTime()));
+            jsonObject.put("p_purchasePrice", price);
+            jsonObject.put("p_signature", p.getSignature());
+            jsonObject.put("p_itemtype", p.getProductId());
+            jsonObject.put("p_itemcount", "1");
+            jsonObject.put("p_purchage_item_name", p.getProductId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        pResult.addParams("p_pay_data_info", jsonObject.toString());
         pResult.execute(true, true);
     }
 
@@ -295,9 +540,36 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 Log.d(MyUtil.TAG, "itemname: " + itemname);
 
                 if (itemname.equalsIgnoreCase(BillingManager.SUBITEM)) {
-                    billingManager.purchase(itemname, true);
+                    if (isListenerCalled) {
+                        if (!StringUtil.isNull(UserPref.getSubscribeState(act)) && UserPref.getSubscribeState(act).equalsIgnoreCase("N")) {
+                            String productName = ""; // "" 일때는 개발자센터에 등록된 상품명 노출
+                            String productType = IapEnum.ProductType.AUTO.getType(); // "
+                            String devPayload = StringUtil.DEVELOPERPAYLOAD;
+                            String gameUserId = ""; // 디폴트 ""
+                            boolean promotionApplicable = false;
+                            mPurchaseClient.launchPurchaseFlowAsync(StringUtil.IAP_API_VERSION, act, PURCHASE_REQUEST, SUBS_ID, productName, productType, devPayload, gameUserId, promotionApplicable, mPurchaseFlowListener);
+                        } else {
+                            Toast.makeText(act, "이미 구독중입니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(act, "결제정보를 불러오고 있습니다. 잠시후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    billingManager.purchase(itemname, false);
+                    String productName = ""; // "" 일때는 개발자센터에 등록된 상품명 노출
+                    String productType = IapEnum.ProductType.IN_APP.getType(); // "inapp"
+                    String devPayload = StringUtil.DEVELOPERPAYLOAD;
+                    String gameUserId = ""; // 디폴트 ""
+                    mPurchaseClient.launchPurchaseFlowAsync(
+                            StringUtil.IAP_API_VERSION,
+                            act,
+                            PURCHASE_REQUEST,
+                            itemname,
+                            productName,
+                            productType,
+                            devPayload,
+                            gameUserId,
+                            false,
+                            mPurchaseFlowListener);
                 }
                 break;
 

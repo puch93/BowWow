@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Geocoder;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -24,25 +23,18 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
 import com.android.billingclient.api.Purchase;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.internal.service.Common;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.onestore.iap.api.IapEnum;
-import com.onestore.iap.api.IapResult;
-import com.onestore.iap.api.PurchaseClient;
-import com.onestore.iap.api.PurchaseData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +44,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,11 +51,9 @@ import java.util.TimerTask;
 import kr.core.bowwow.R;
 import kr.core.bowwow.app;
 import kr.core.bowwow.billing.BillingManager;
-import kr.core.bowwow.dialogAct.DlgPayment;
 import kr.core.bowwow.dto.ChatItem;
 import kr.core.bowwow.dto.pref.UserPref;
 import kr.core.bowwow.network.HttpResult;
-import kr.core.bowwow.network.MultipartUtility;
 import kr.core.bowwow.network.NetUrls;
 import kr.core.bowwow.network.ReqBasic;
 import kr.core.bowwow.utils.CoupangReceiver;
@@ -72,7 +61,7 @@ import kr.core.bowwow.utils.DBHelper;
 import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
-public class SplashAct extends BaseAct {
+public class SplashActTmp extends BaseAct {
     Activity act;
     BillingManager billingManager;
 
@@ -81,21 +70,12 @@ public class SplashAct extends BaseAct {
     private Timer timer = new Timer();
     boolean isReady = false;
     boolean isPurchaseStateReady = false;
-    boolean isPurchaseStateReadySubs = false;
     String fcm_token, device_version, sub_state;
 
     private static final int OVERLAY = 1003;
     TextView version_text;
 
     String dog_code = null;
-
-
-    /* one store billing */
-    private static final String SUBS_ID = "subs_removal_ads";
-    private static final int PURCHASE_REQUEST = 9500;
-    String productType = "auto";
-
-    PurchaseClient mPurchaseClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +107,7 @@ public class SplashAct extends BaseAct {
         // get fcm token
         getFcmToken();
 
-        // get billing data
-        mPurchaseClient = new PurchaseClient(act, StringUtil.KEY);
-        mPurchaseClient.connect(mServiceConnectionListener);
+        billingCheck();
 
         checkTimer();
 
@@ -140,273 +118,6 @@ public class SplashAct extends BaseAct {
                 checkVer();
             }
         }, 1500);
-    }
-
-    PurchaseClient.ServiceConnectionListener mServiceConnectionListener = new PurchaseClient.ServiceConnectionListener() {
-        @Override
-        public void onConnected() {
-            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
-            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListenerSubs);
-            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "inapp", mQueryPurchaseListenerItem);
-            Log.d("ONE", "Service connected");
-            //2. mBillingSupportedListener < 나도모름 / mQueryPurchaseListener << 구매 내역 들고오기
-        }
-
-        @Override
-        public void onDisconnected() {
-            Log.d("ONE", "Service disconnected");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("ONE", "connect onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-            PurchaseClient.launchUpdateOrInstallFlow(act);
-        }
-    };
-
-    PurchaseClient.BillingSupportedListener mBillingSupportedListener = new PurchaseClient.BillingSupportedListener() {
-
-        @Override
-        public void onSuccess() {
-            Log.d("ONE", "isBillingSupportedAsync onSuccess");
-        }
-
-        @Override
-        public void onError(IapResult result) {
-            Log.e("ONE", "isBillingSupportedAsync onError, " + result.toString());
-        }
-
-        @Override
-        public void onErrorRemoteException() {
-            Log.e("ONE", "isBillingSupportedAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
-        }
-
-        @Override
-        public void onErrorSecurityException() {
-            Log.e("ONE", "isBillingSupportedAsync onError, 비정상 앱에서 결제가 요청되었습니다");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("ONE", "isBillingSupportedAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-        }
-    };
-
-    PurchaseClient.QueryPurchaseListener mQueryPurchaseListenerSubs = new PurchaseClient.QueryPurchaseListener() {
-        @Override
-        public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
-
-            Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
-            //구독 판별
-            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-                //아이템
-            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
-                //구독
-
-                if (purchaseDataList.size() > 0) {
-                    for (int i = 0; i < purchaseDataList.size(); i++) {
-                        Log.i(StringUtil.TAG, "purchaseDataList.get(" + i + "): " + purchaseDataList.get(i).toString());
-                        if (purchaseDataList.get(i).getRecurringState() == 0) {
-                            //  구독중
-                            UserPref.setSubscribeState(act, "Y");
-                            sub_state = "Y";
-                        } else if (purchaseDataList.get(i).getRecurringState() == 1) {
-                            //  구독 해지중
-                            UserPref.setSubscribeState(act, "Y");
-                            sub_state = "Y";
-
-                        } else if (purchaseDataList.get(i).getRecurringState() == -1) {
-                            //  구독 X
-                            UserPref.setSubscribeState(act, "N");
-                            sub_state = "N";
-                        }
-                    }
-                }
-            }
-
-            isPurchaseStateReadySubs = true;
-            Log.i(StringUtil.TAG, "isPurchaseStateReadySubs = true;: ");
-
-        }
-
-        @Override
-        public void onErrorRemoteException() {
-            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
-        }
-
-        @Override
-        public void onErrorSecurityException() {
-            Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-        }
-
-        @Override
-        public void onError(IapResult result) {
-            Log.e("one", "queryPurchasesAsync onError, " + result.toString());
-        }
-    };
-
-    PurchaseClient.QueryPurchaseListener mQueryPurchaseListenerItem = new PurchaseClient.QueryPurchaseListener() {
-        @Override
-        public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
-
-            Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
-            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-
-            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
-                //구독 판별
-                if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-                    //아이템
-                    if (purchaseDataList.size() > 0) {
-                        for (int i = 0; i < purchaseDataList.size(); i++) {
-                            PurchaseData purchaseData = purchaseDataList.get(i); // 구매내역조회 및 구매요청 후 전달받은 PurchaseData
-                            mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
-                        }
-                    }
-                }
-            }
-
-            isPurchaseStateReady = true;
-            Log.i(StringUtil.TAG, "isPurchaseStateReady = true;: ");
-        }
-
-        @Override
-        public void onErrorRemoteException() {
-            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
-        }
-
-        @Override
-        public void onErrorSecurityException() {
-            Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-        }
-
-        @Override
-        public void onError(IapResult result) {
-            Log.e("one", "queryPurchasesAsync onError, " + result.toString());
-        }
-    };
-
-    PurchaseClient.ConsumeListener mConsumeListener = new PurchaseClient.ConsumeListener() {
-        @Override
-        public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
-            Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
-            // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
-
-            sendPurchaseResult(purchaseData);
-        }
-
-        @Override
-        public void onErrorRemoteException() {
-            Log.e("ONE", "consumeAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
-        }
-
-        @Override
-        public void onErrorSecurityException() {
-            Log.e("ONE", "consumeAsync onError, 비정상 앱에서 결제가 요청되었습니다");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("ONE", "consumeAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-        }
-
-        @Override
-        public void onError(IapResult result) {
-            Log.e("ONE", "consumeAsync onError, " + result.toString());
-        }
-    };
-
-    private void sendPurchaseResult(final com.onestore.iap.api.PurchaseData p) {
-        ReqBasic pResult = new ReqBasic(this, NetUrls.DOMAIN) {
-            @Override
-            public void onAfter(int resultCode, HttpResult resultData) {
-//                {"result":"Y","message":"성공적으로 등록 완료되었습니다.","url":""}
-                Log.d(MyUtil.TAG, "sendPurchaseResult: " + resultData.getResult());
-                if (resultData.getResult() != null) {
-
-                    try {
-
-                        JSONObject jo = new JSONObject(resultData.getResult());
-                        Toast.makeText(act, jo.getString("message"), Toast.LENGTH_SHORT).show();
-                        if (jo.getString("result").equalsIgnoreCase("Y")) {
-                        } else {
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(act, getString(R.string.net_errmsg) + "\n문제 : 데이터 형태", Toast.LENGTH_SHORT).show();
-                    }
-
-                    finish();
-
-                } else {
-                    Toast.makeText(act, getString(R.string.net_errmsg) + "\n문제 : 값이 없음", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-
-        pResult.addParams("CONNECTCODE", "APP");
-        pResult.addParams("siteUrl", NetUrls.MEDIADOMAIN);
-        pResult.addParams("_APP_MEM_IDX", UserPref.getIdx(this));
-        pResult.addParams("MEMCODE", UserPref.getIdx(this));
-        pResult.addParams("dbControl", "setPointINAPPPayment");
-        pResult.addParams("m_uniq", UserPref.getDeviceId(this));
-        pResult.addParams("p_market", "One");
-        pResult.addParams("p_class", "point");
-
-        String point = "0";
-        String price = "";
-        switch (p.getProductId()) {
-            case "bone10":
-                point = "10";
-                price = "3300";
-                break;
-            case "bone30":
-                point = "30";
-                price = "7700";
-                break;
-            case "bone50":
-                point = "50";
-                price = "14300";
-                break;
-            case "bone100":
-                point = "100";
-                price = "22000";
-                break;
-        }
-        pResult.addParams("p_point", point);
-
-        pResult.addParams("price", price);
-        pResult.addParams("p_purchase_item_name", p.getProductId());
-        pResult.addParams("p_purchasetime", String.valueOf(p.getPurchaseTime()));
-        pResult.addParams("p_orderid", p.getOrderId());
-        pResult.addParams("p_token", p.getSignature());
-        pResult.addParams("productId", p.getProductId());
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("p_orderid", p.getOrderId());
-            jsonObject.put("p_store_type", "OneStore");
-            jsonObject.put("p_purchasetime", String.valueOf(p.getPurchaseTime()));
-            jsonObject.put("p_purchasePrice", price);
-            jsonObject.put("p_signature", p.getSignature());
-            jsonObject.put("p_itemtype", p.getProductId());
-            jsonObject.put("p_itemcount", "1");
-            jsonObject.put("p_purchage_item_name", p.getProductId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        pResult.addParams("p_pay_data_info", jsonObject.toString());
-        pResult.execute(true, true);
     }
 
     private void getFcmToken() {
@@ -436,7 +147,7 @@ public class SplashAct extends BaseAct {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (isReady && isPurchaseStateReady && isPurchaseStateReadySubs && !MyUtil.isNull(fcm_token)) {
+                        if (isReady && isPurchaseStateReady && !MyUtil.isNull(fcm_token)) {
                             isReady = false;
                             Log.i(StringUtil.TAG, "run: ");
                             setUserInfo();
@@ -496,7 +207,7 @@ public class SplashAct extends BaseAct {
     private void startProgram() {
         Log.i(StringUtil.TAG, "startProgram: ");
         if (isReqPermission()) {
-            Intent intent = new Intent(SplashAct.this, PermissionAct.class);
+            Intent intent = new Intent(SplashActTmp.this, PermissionAct.class);
             startActivity(intent);
             finish();
         } else {
@@ -649,7 +360,7 @@ public class SplashAct extends BaseAct {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
                                                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                                                        if (StringUtil.isGoogle) {
+                                                        if(StringUtil.isGoogle) {
                                                             intent.setData(Uri.parse(StringUtil.URL_PLAY_STORE));
                                                         } else {
                                                             intent.setData(Uri.parse(StringUtil.URL_ONE_STORE_APP));
@@ -689,14 +400,14 @@ public class SplashAct extends BaseAct {
 
     private void lastProcess() {
         if (MyUtil.isNull(dog_code)) {
-            startActivity(new Intent(SplashAct.this, DogInfoAct.class));
+            startActivity(new Intent(SplashActTmp.this, DogInfoAct.class));
         } else {
             if (Integer.parseInt(dog_code) > 0) {
-                UserPref.setDogIdx(SplashAct.this, dog_code);
+                UserPref.setDogIdx(SplashActTmp.this, dog_code);
                 getTalkList();
-                startActivity(new Intent(SplashAct.this, MainActivity.class));
+                startActivity(new Intent(SplashActTmp.this, MainActivity.class));
             } else {
-                startActivity(new Intent(SplashAct.this, DogInfoAct.class));
+                startActivity(new Intent(SplashActTmp.this, DogInfoAct.class));
             }
         }
         finish();
@@ -719,7 +430,7 @@ public class SplashAct extends BaseAct {
                         JSONObject jo = new JSONObject(resultData.getResult());
 
                         if (jo.getString("result").equalsIgnoreCase("Y")) {
-                            UserPref.setIdx(SplashAct.this, jo.getString("MEMCODE"));
+                            UserPref.setIdx(SplashActTmp.this, jo.getString("MEMCODE"));
 
                             dog_code = jo.getString("DOGCODE");
 
@@ -731,15 +442,15 @@ public class SplashAct extends BaseAct {
                             preSetting();
 
                         } else {
-                            Toast.makeText(SplashAct.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SplashActTmp.this, jo.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(SplashAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SplashActTmp.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(SplashAct.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SplashActTmp.this, getString(R.string.net_errmsg), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -764,6 +475,25 @@ public class SplashAct extends BaseAct {
         login.addParams("agent2", Build.MODEL + "@@@@@" + tManager.getNetworkOperatorName());
 
         login.execute(true, true);
+    }
+
+    private void billingCheck() {
+        billingManager = new BillingManager(this, new BillingManager.AfterBilling() {
+            @Override
+            public void sendResult(Purchase purchase, boolean isSubcribe) {
+                // 서버로 값 전송(결제 완료)
+            }
+
+            @Override
+            public void getSubsriptionState(final String subscription, Purchase purchase) {
+                // subscription = Y : 구독중, N : 구독X
+                Log.d(MyUtil.TAG, "getSubsriptionState: " + subscription);
+
+                UserPref.setSubscribeState(SplashActTmp.this, subscription);
+                sub_state = subscription;
+                isPurchaseStateReady = true;
+            }
+        });
     }
 
     private void getTalkList() {
@@ -803,7 +533,7 @@ public class SplashAct extends BaseAct {
 //                                msgData.getString("t_editdate");
 //                                msgData.getString("num");
 
-                                            if (db.getLastItem(SplashAct.this) == null) {
+                                            if (db.getLastItem(SplashActTmp.this) == null) {
 
 
                                                 data.setT_idx(msgData.getString("t_idx"));
@@ -826,10 +556,10 @@ public class SplashAct extends BaseAct {
                                                     data.setDuration(msgData.getString("t_sound_runtime"));
                                                 }
 
-                                                db.chatItemInsert(SplashAct.this, data);
+                                                db.chatItemInsert(SplashActTmp.this, data);
 
                                             } else {
-                                                if (Integer.parseInt(db.getLastItem(SplashAct.this).getT_idx()) < Integer.parseInt(msgData.getString("t_idx"))) {
+                                                if (Integer.parseInt(db.getLastItem(SplashActTmp.this).getT_idx()) < Integer.parseInt(msgData.getString("t_idx"))) {
                                                     data.setT_idx(msgData.getString("t_idx"));
                                                     data.setT_type(msgData.getString("t_type"));
                                                     data.setT_msg(msgData.getString("t_msg"));
@@ -850,7 +580,7 @@ public class SplashAct extends BaseAct {
                                                         data.setDuration(msgData.getString("t_sound_runtime"));
                                                     }
 
-                                                    db.chatItemInsert(SplashAct.this, data);
+                                                    db.chatItemInsert(SplashActTmp.this, data);
                                                 }
                                             }
                                         }
@@ -858,7 +588,7 @@ public class SplashAct extends BaseAct {
                                         if (app.chatItems.size() > 0) {
                                             app.chatItems.clear();
                                         }
-                                        app.chatItems.addAll(db.getChatList(SplashAct.this));
+                                        app.chatItems.addAll(db.getChatList(SplashActTmp.this));
 //                            for (int i = 0; i < app.chatItems.size(); i++){
 //                                Log.d(MyUtil.TAG, "item: "+app.chatItems.get(i).toString());
 //                            }

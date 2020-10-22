@@ -363,6 +363,30 @@
                             android:textSize="@dimen/xxxlarge_text" />
 
                     </LinearLayout>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/pettranslate_img_1pxline_200117" />
+
+                    <LinearLayout
+                        android:id="@+id/btn_subs"
+                        android:layout_width="match_parent"
+                        android:layout_height="71dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_subs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="월정액 취소"
+                            android:textColor="@color/c_black1D"
+                            android:textSize="@dimen/xxxlarge_text" />
+
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="match_parent"

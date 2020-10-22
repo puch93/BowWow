@@ -28,6 +28,16 @@ public class StringUtil {
     public static final String CID_POPULAR = "10071";
     public static final String CID_RECOMMEND = "10073";
 
+    public static final String KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPNzJcYq6Tard+oUtAXIiR5E9CApNOWQFVmrIC/NlcZNDJwbB+CDvLLdXgMGMoSzvvCA9Z49Ic42md7bajSsCS55itRYftJaOyjZFdkk+S3gqDF9mGZqFAV6O7d94d/4XPUV3JCP4DLgSGoHyiYBPbJzKdjOgYF+rjaKnzkUhPXwIDAQAB";
+    public static final String DEVELOPERPAYLOAD = "bowwow";
+    public static final int IAP_API_VERSION = 5;
+
+    public static final boolean isGoogle = false;
+    public static final String URL_ONE_STORE_WEB = "https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000751732";
+    public static final String URL_ONE_STORE_APP = "onestore://common/product/0000751732";
+    public static final String URL_PLAY_STORE = "https://play.google.com/store/apps/details?id=kr.core.bowwow";
+
+
     public static boolean isNull(String str) {
         if (str == null || str.length() == 0 || str.equals("null")) {
             return true;
