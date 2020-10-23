@@ -44,7 +44,6 @@ import kr.core.bowwow.utils.MyUtil;
 import kr.core.bowwow.utils.StringUtil;
 
 public class DlgPayment extends BaseAct implements View.OnClickListener {
-
     DlgPaymentBinding binding;
     Activity act;
 
@@ -55,8 +54,8 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
     private static final int PURCHASE_REQUEST = 9500;
     String productType = "auto";
     PurchaseClient mPurchaseClient;
-    boolean isListenerCalled = false;
-    boolean isPurchaseStateReady = false;
+    boolean isPurchaseStateReadySubs = false;
+    boolean isPurchaseStateReadyItem = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +94,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         @Override
         public void onConnected() {
             mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
-            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListener);
+            mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListenerSubs);
             mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "inapp", mQueryPurchaseListenerItem);
             Log.d("ONE", "Service connected");
             //2. mBillingSupportedListener < 나도모름 / mQueryPurchaseListener << 구매 내역 들고오기
@@ -142,16 +141,14 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
     };
 
 
-    PurchaseClient.QueryPurchaseListener mQueryPurchaseListener = new PurchaseClient.QueryPurchaseListener() {
+    PurchaseClient.QueryPurchaseListener mQueryPurchaseListenerSubs = new PurchaseClient.QueryPurchaseListener() {
         @Override
         public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
-            isListenerCalled = true;
+            isPurchaseStateReadySubs = true;
 
             Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
             //구독 판별
-            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-                //아이템
-            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
+            if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
                 //구독
                 if (purchaseDataList.size() > 0) {
                     for (int i = 0; i < purchaseDataList.size(); i++) {
@@ -162,12 +159,14 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                         } else if (purchaseDataList.get(i).getRecurringState() == 1) {
                             //  구독 해지중
                             UserPref.setSubscribeState(getApplicationContext(), "Y");
-
                         } else if (purchaseDataList.get(i).getRecurringState() == -1) {
                             //  구독 X
                             UserPref.setSubscribeState(getApplicationContext(), "N");
                         }
                     }
+                }  else {
+                    //  구독 X
+                    UserPref.setSubscribeState(act, "N");
                 }
             }
         }
@@ -205,18 +204,16 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 return;
             }
 
-            // 구매완료 후 signature 검증을 수행한다.
             if (purchaseData.getProductId().equals(SUBS_ID)) {
-                {
-                    Log.i(StringUtil.TAG, "onSuccess: ");
-                    UserPref.setSubscribeState(getApplicationContext(), "Y");
-                    //TODO 여기 결제완료되었으니 서버 업뎃 할것
-//                    sendPurchaseResult(purchaseData, true);
-                }
-            } else {
+                // 구독 구매완료
+                Log.i(StringUtil.TAG, "구독 구매완료: ");
+
+                UserPref.setSubscribeState(getApplicationContext(), "Y");
                 //TODO 여기 결제완료되었으니 서버 업뎃 할것
 //                    sendPurchaseResult(purchaseData, true);
-                Log.d("ONE", "launchPurchaseFlowAsync onSuccess, Signature is not valid.");
+            } else {
+                // 인앱아이템 구매완료
+                Log.i(StringUtil.TAG, "인앱아이템 구매완료: ");
                 // 관리형상품(inapp)은 구매 완료 후 소비를 수행한다.
                 mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
                 return;
@@ -288,7 +285,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 }
             }
 
-            isPurchaseStateReady = true;
+            isPurchaseStateReadyItem = true;
         }
 
         @Override
@@ -319,7 +316,8 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
             Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
             // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
 
-//            sendPurchaseResult(purchaseData, false);
+            //TODO 여기 결제완료되었으니 서버 업뎃 할것
+//                    sendPurchaseResult(purchaseData, true);
         }
 
         @Override
@@ -539,8 +537,9 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 }
                 Log.d(MyUtil.TAG, "itemname: " + itemname);
 
+
                 if (itemname.equalsIgnoreCase(BillingManager.SUBITEM)) {
-                    if (isListenerCalled) {
+                    if (isPurchaseStateReadySubs) {
                         if (!StringUtil.isNull(UserPref.getSubscribeState(act)) && UserPref.getSubscribeState(act).equalsIgnoreCase("N")) {
                             String productName = ""; // "" 일때는 개발자센터에 등록된 상품명 노출
                             String productType = IapEnum.ProductType.AUTO.getType(); // "

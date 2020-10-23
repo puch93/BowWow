@@ -80,7 +80,7 @@ public class SplashAct extends BaseAct {
 
     private Timer timer = new Timer();
     boolean isReady = false;
-    boolean isPurchaseStateReady = false;
+    boolean isPurchaseStateReadyItem = false;
     boolean isPurchaseStateReadySubs = false;
     String fcm_token, device_version, sub_state;
 
@@ -198,11 +198,8 @@ public class SplashAct extends BaseAct {
 
             Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
             //구독 판별
-            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-                //아이템
-            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
+            if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
                 //구독
-
                 if (purchaseDataList.size() > 0) {
                     for (int i = 0; i < purchaseDataList.size(); i++) {
                         Log.i(StringUtil.TAG, "purchaseDataList.get(" + i + "): " + purchaseDataList.get(i).toString());
@@ -214,13 +211,15 @@ public class SplashAct extends BaseAct {
                             //  구독 해지중
                             UserPref.setSubscribeState(act, "Y");
                             sub_state = "Y";
-
                         } else if (purchaseDataList.get(i).getRecurringState() == -1) {
                             //  구독 X
                             UserPref.setSubscribeState(act, "N");
                             sub_state = "N";
                         }
                     }
+                }  else {
+                    //  구독 X
+                    UserPref.setSubscribeState(act, "N");
                 }
             }
 
@@ -231,21 +230,25 @@ public class SplashAct extends BaseAct {
 
         @Override
         public void onErrorRemoteException() {
+            isPurchaseStateReadySubs = true;
             Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
         }
 
         @Override
         public void onErrorSecurityException() {
+            isPurchaseStateReadySubs = true;
             Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
         }
 
         @Override
         public void onErrorNeedUpdateException() {
+            isPurchaseStateReadySubs = true;
             Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
         }
 
         @Override
         public void onError(IapResult result) {
+            isPurchaseStateReadySubs = true;
             Log.e("one", "queryPurchasesAsync onError, " + result.toString());
         }
     };
@@ -255,9 +258,7 @@ public class SplashAct extends BaseAct {
         public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
 
             Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
-            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-
-            } else if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
+            if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
                 //구독 판별
                 if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
                     //아이템
@@ -270,28 +271,32 @@ public class SplashAct extends BaseAct {
                 }
             }
 
-            isPurchaseStateReady = true;
-            Log.i(StringUtil.TAG, "isPurchaseStateReady = true;: ");
+            isPurchaseStateReadyItem = true;
+            Log.i(StringUtil.TAG, "isPurchaseStateReadyItem = true;: ");
         }
 
         @Override
         public void onErrorRemoteException() {
             Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+            isPurchaseStateReadyItem = true;
         }
 
         @Override
         public void onErrorSecurityException() {
             Log.e("one", "queryPurchasesAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+            isPurchaseStateReadyItem = true;
         }
 
         @Override
         public void onErrorNeedUpdateException() {
             Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+            isPurchaseStateReadyItem = true;
         }
 
         @Override
         public void onError(IapResult result) {
             Log.e("one", "queryPurchasesAsync onError, " + result.toString());
+            isPurchaseStateReadyItem = true;
         }
     };
 
@@ -436,7 +441,7 @@ public class SplashAct extends BaseAct {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (isReady && isPurchaseStateReady && isPurchaseStateReadySubs && !MyUtil.isNull(fcm_token)) {
+                        if (isReady && isPurchaseStateReadyItem && isPurchaseStateReadySubs && !MyUtil.isNull(fcm_token)) {
                             isReady = false;
                             Log.i(StringUtil.TAG, "run: ");
                             setUserInfo();
