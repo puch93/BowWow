@@ -145,7 +145,7 @@ public class SplashAct extends BaseAct {
     PurchaseClient.ServiceConnectionListener mServiceConnectionListener = new PurchaseClient.ServiceConnectionListener() {
         @Override
         public void onConnected() {
-            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
+//            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
             mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListenerSubs);
             mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "inapp", mQueryPurchaseListenerItem);
             Log.d("ONE", "Service connected");
@@ -217,7 +217,7 @@ public class SplashAct extends BaseAct {
                             sub_state = "N";
                         }
                     }
-                }  else {
+                } else {
                     //  구독 X
                     UserPref.setSubscribeState(act, "N");
                 }
@@ -258,15 +258,13 @@ public class SplashAct extends BaseAct {
         public void onSuccess(List<PurchaseData> purchaseDataList, String productType) {
 
             Log.d("one", "queryPurchasesAsync onSuccess, " + purchaseDataList.toString());
-            if (IapEnum.ProductType.AUTO.getType().equalsIgnoreCase(productType)) {
-                //구독 판별
-                if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
-                    //아이템
-                    if (purchaseDataList.size() > 0) {
-                        for (int i = 0; i < purchaseDataList.size(); i++) {
-                            PurchaseData purchaseData = purchaseDataList.get(i); // 구매내역조회 및 구매요청 후 전달받은 PurchaseData
-                            mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
-                        }
+            //구독 판별
+            if (IapEnum.ProductType.IN_APP.getType().equalsIgnoreCase(productType)) {
+                //아이템
+                if (purchaseDataList.size() > 0) {
+                    for (int i = 0; i < purchaseDataList.size(); i++) {
+                        PurchaseData purchaseData = purchaseDataList.get(i); // 구매내역조회 및 구매요청 후 전달받은 PurchaseData
+                        mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
                     }
                 }
             }

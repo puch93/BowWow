@@ -93,7 +93,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
     PurchaseClient.ServiceConnectionListener mServiceConnectionListener = new PurchaseClient.ServiceConnectionListener() {
         @Override
         public void onConnected() {
-            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
+//            mPurchaseClient.isBillingSupportedAsync(StringUtil.IAP_API_VERSION, mBillingSupportedListener);
             mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "auto", mQueryPurchaseListenerSubs);
             mPurchaseClient.queryPurchasesAsync(StringUtil.IAP_API_VERSION, "inapp", mQueryPurchaseListenerItem);
             Log.d("ONE", "Service connected");
@@ -193,13 +193,13 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
     };
 
 
-    //4. 결제 완료 리스너
+    // 결제 완료 리스너
     PurchaseClient.PurchaseFlowListener mPurchaseFlowListener = new PurchaseClient.PurchaseFlowListener() {
         @Override
         public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
             Log.d("ONE", "launchPurchaseFlowAsync onSuccess, " + purchaseData.toString());
             // 구매완료 후 developer payload 검증을 수해한다.
-            if (!purchaseData.getDeveloperPayload().equalsIgnoreCase(StringUtil.DEVELOPERPAYLOAD)) {
+            if (!purchaseData.getDeveloperPayload().equalsIgnoreCase(StringUtil.DEVELOPER_PAYLOAD)) {
                 Log.d("ONE", "launchPurchaseFlowAsync onSuccess, Payload is not valid.");
                 return;
             }
@@ -209,12 +209,11 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 Log.i(StringUtil.TAG, "구독 구매완료: ");
 
                 UserPref.setSubscribeState(getApplicationContext(), "Y");
-                //TODO 여기 결제완료되었으니 서버 업뎃 할것
-//                    sendPurchaseResult(purchaseData, true);
+                //TODO 결제후 서버로 전달하는 함수 작성 ex)sendPurchaseResult
             } else {
                 // 인앱아이템 구매완료
                 Log.i(StringUtil.TAG, "인앱아이템 구매완료: ");
-                // 관리형상품(inapp)은 구매 완료 후 소비를 수행한다.
+                // 관리형상품(inapp)은 구매 완료 후 소비를 수행한다. 소비까지 수행해야 온전한 구매가 됨
                 mPurchaseClient.consumeAsync(StringUtil.IAP_API_VERSION, purchaseData, mConsumeListener);
                 return;
             }
@@ -241,7 +240,6 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         }
     };
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -266,6 +264,30 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         }
     }
 
+    PurchaseClient.ConsumeListener mConsumeListener = new PurchaseClient.ConsumeListener() {
+        @Override
+        public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
+            Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
+            // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
+            //TODO 결제후 서버로 전달하는 함수 작성 ex)sendPurchaseResult
+        }
+        @Override
+        public void onErrorRemoteException() {
+            Log.e("ONE", "consumeAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
+        }
+        @Override
+        public void onErrorSecurityException() {
+            Log.e("ONE", "consumeAsync onError, 비정상 앱에서 결제가 요청되었습니다");
+        }
+        @Override
+        public void onErrorNeedUpdateException() {
+            Log.e("ONE", "consumeAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
+        }
+        @Override
+        public void onError(IapResult result) {
+            Log.e("ONE", "consumeAsync onError, " + result.toString());
+        }
+    };
 
     PurchaseClient.QueryPurchaseListener mQueryPurchaseListenerItem = new PurchaseClient.QueryPurchaseListener() {
         @Override
@@ -287,7 +309,6 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
 
             isPurchaseStateReadyItem = true;
         }
-
         @Override
         public void onErrorRemoteException() {
             Log.e("one", "queryPurchasesAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
@@ -306,38 +327,6 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         @Override
         public void onError(IapResult result) {
             Log.e("one", "queryPurchasesAsync onError, " + result.toString());
-        }
-    };
-
-
-    PurchaseClient.ConsumeListener mConsumeListener = new PurchaseClient.ConsumeListener() {
-        @Override
-        public void onSuccess(com.onestore.iap.api.PurchaseData purchaseData) {
-            Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
-            // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
-
-            //TODO 여기 결제완료되었으니 서버 업뎃 할것
-//                    sendPurchaseResult(purchaseData, true);
-        }
-
-        @Override
-        public void onErrorRemoteException() {
-            Log.e("ONE", "consumeAsync onError, 원스토어 서비스와 연결을 할 수 없습니다");
-        }
-
-        @Override
-        public void onErrorSecurityException() {
-            Log.e("ONE", "consumeAsync onError, 비정상 앱에서 결제가 요청되었습니다");
-        }
-
-        @Override
-        public void onErrorNeedUpdateException() {
-            Log.e("ONE", "consumeAsync onError, 원스토어 서비스앱의 업데이트가 필요합니다");
-        }
-
-        @Override
-        public void onError(IapResult result) {
-            Log.e("ONE", "consumeAsync onError, " + result.toString());
         }
     };
 
@@ -543,7 +532,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                         if (!StringUtil.isNull(UserPref.getSubscribeState(act)) && UserPref.getSubscribeState(act).equalsIgnoreCase("N")) {
                             String productName = ""; // "" 일때는 개발자센터에 등록된 상품명 노출
                             String productType = IapEnum.ProductType.AUTO.getType(); // "
-                            String devPayload = StringUtil.DEVELOPERPAYLOAD;
+                            String devPayload = StringUtil.DEVELOPER_PAYLOAD;
                             String gameUserId = ""; // 디폴트 ""
                             boolean promotionApplicable = false;
                             mPurchaseClient.launchPurchaseFlowAsync(StringUtil.IAP_API_VERSION, act, PURCHASE_REQUEST, SUBS_ID, productName, productType, devPayload, gameUserId, promotionApplicable, mPurchaseFlowListener);
@@ -556,7 +545,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
                 } else {
                     String productName = ""; // "" 일때는 개발자센터에 등록된 상품명 노출
                     String productType = IapEnum.ProductType.IN_APP.getType(); // "inapp"
-                    String devPayload = StringUtil.DEVELOPERPAYLOAD;
+                    String devPayload = StringUtil.DEVELOPER_PAYLOAD;
                     String gameUserId = ""; // 디폴트 ""
                     mPurchaseClient.launchPurchaseFlowAsync(
                             StringUtil.IAP_API_VERSION,
