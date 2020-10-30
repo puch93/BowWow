@@ -210,6 +210,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
 
                 UserPref.setSubscribeState(getApplicationContext(), "Y");
                 //TODO 결제후 서버로 전달하는 함수 작성 ex)sendPurchaseResult
+                sendPurchaseResult(purchaseData, true);
             } else {
                 // 인앱아이템 구매완료
                 Log.i(StringUtil.TAG, "인앱아이템 구매완료: ");
@@ -270,6 +271,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
             Log.d("ONE", "consumeAsync onSuccess, " + purchaseData.toString());
             // 상품소비 성공, 이후 시나리오는 각 개발사의 구매완료 시나리오를 진행합니다.
             //TODO 결제후 서버로 전달하는 함수 작성 ex)sendPurchaseResult
+            sendPurchaseResult(purchaseData, false);
         }
         @Override
         public void onErrorRemoteException() {
@@ -432,7 +434,7 @@ public class DlgPayment extends BaseAct implements View.OnClickListener {
         pResult.addParams("MEMCODE", UserPref.getIdx(this));
         pResult.addParams("dbControl", "setPointINAPPPayment");
         pResult.addParams("m_uniq", UserPref.getDeviceId(this));
-        pResult.addParams("p_market", "One");
+        pResult.addParams("p_market", "ONE");
 
         if (isSubscribe) {
             pResult.addParams("p_class", "month");

@@ -268,6 +268,7 @@ public class More extends Fragment implements View.OnClickListener {
                                 }
                             } else {
                                 binding.boneCount.setText("구독권 이용중");
+                                binding.tvBonecnt.setText("구독권 이용중");
                                 binding.gae.setVisibility(View.GONE);
                             }
                         } else {

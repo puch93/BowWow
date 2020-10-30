@@ -104,13 +104,12 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
                             @Override
                             public void onAfterOk() {
                                 pointMinus(list.get(position));
-//                        getMypoint(list.get(position));
                             }
 
                             @Override
                             public void onAfterCancel() {
-
                             }
+
                         });
                     } else {
                         Intent play = new Intent(act, DlgCommandPlay.class);

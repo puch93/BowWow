@@ -142,9 +142,7 @@ public class Chatting extends Fragment implements View.OnClickListener {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        if(Integer.parseInt(binding.boneCount.getText().toString()) > 0) {
-                            Log.i(StringUtil.TAG, "onTouch: ACTION_DOWN");
-                            pointMinusDog();
+                        if(UserPref.getSubscribeState(act).equalsIgnoreCase("Y")) {
                             act.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -154,13 +152,26 @@ public class Chatting extends Fragment implements View.OnClickListener {
                             binding.areaListening.setPressed(true);
                             setDetectApi();
                         } else {
-                            act.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(act, "뼈다귀 개수가 모자랍니다. 충전 후 이용해주세요.", Toast.LENGTH_SHORT).show();
-                                    act.startActivity(new Intent(act, DlgPayment.class));
-                                }
-                            });
+                            if(Integer.parseInt(binding.boneCount.getText().toString()) > 0) {
+                                Log.i(StringUtil.TAG, "onTouch: ACTION_DOWN");
+                                pointMinusDog();
+                                act.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        binding.areaListeningAll.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                                binding.areaListening.setPressed(true);
+                                setDetectApi();
+                            } else {
+                                act.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(act, "뼈다귀 개수가 모자랍니다. 충전 후 이용해주세요.", Toast.LENGTH_SHORT).show();
+                                        act.startActivity(new Intent(act, DlgPayment.class));
+                                    }
+                                });
+                            }
                         }
                         return true;
 
@@ -496,7 +507,15 @@ public class Chatting extends Fragment implements View.OnClickListener {
                             @Override
                             public void onAfterOk() {
 //                                checkPay(binding.etMsg.getText().toString());
-                                pointMinus(binding.etMsg.getText().toString());
+                                if(UserPref.getSubscribeState(act).equalsIgnoreCase("Y")) {
+                                    Intent pmsg = new Intent(act, DlgPersonTrans.class);
+                                    pmsg.putExtra("pmsg", binding.etMsg.getText().toString());
+                                    startActivityForResult(pmsg, 102);
+                                    binding.etMsg.setText(null);
+                                } else {
+                                    pointMinus(binding.etMsg.getText().toString());
+                                }
+
                             }
 
                             @Override
